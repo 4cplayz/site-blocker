@@ -1,0 +1,14 @@
+/* Every native player on the page. */
+video {
+  display: none !important;
+}
+/* The embedded players of the big video hosts. */
+iframe[src*="youtube.com/embed"],
+iframe[src*="youtube-nocookie.com/embed"],
+iframe[src*="player.vimeo.com"],
+iframe[src*="dailymotion.com/embed"],
+iframe[src*="tiktok.com/embed"],
+iframe[src*="player.twitch.tv"],
+iframe[src*="instagram.com/"][src*="/embed"] {
+  display: none !important;
+}

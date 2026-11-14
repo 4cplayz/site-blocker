@@ -1,0 +1,120 @@
+/* Normal (long-form) video cards in every feed YouTube pushes: home,
+   subscriptions, channel pages and topic hubs, search, the watch-page
+   sidebar. The player of an opened video stays, and so do your own lists
+   (playlists, Watch later, Liked videos, history, the "You" page).
+   Shorts are left to the shorts feature, posts to the images feature. */
+
+/* A video, mix or playlist card (new lockup card), home/subscriptions/channel/hub grids */
+ytd-browse:not([page-subtype="playlist"], [page-subtype="history"], [page-subtype="you"]) ytd-rich-item-renderer:has(> #content > yt-lockup-view-model):not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}
+
+/* A video, mix or playlist card (older rich-grid card), home/subscriptions/channel/hub grids */
+ytd-browse:not([page-subtype="playlist"], [page-subtype="history"], [page-subtype="you"]) ytd-rich-item-renderer:has(> #content > ytd-rich-grid-media):not(:has(a[href^="/shorts/"], [overlay-style="SHORTS"])) {
+  display: none !important;
+}
+
+/* A movie card, home/subscriptions/channel/hub grids */
+ytd-browse:not([page-subtype="playlist"], [page-subtype="history"], [page-subtype="you"]) ytd-rich-item-renderer:has(> #content > ytd-rich-grid-slim-media):not(:has(a[href^="/shorts/"], [overlay-style="SHORTS"])) {
+  display: none !important;
+}
+
+/* A full-width row of video cards ("Breaking news", "Most relevant", topic shelves), home and subscriptions */
+ytd-browse:not([page-subtype="playlist"], [page-subtype="history"], [page-subtype="you"]) ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:not([is-shorts]) yt-lockup-view-model) {
+  display: none !important;
+}
+
+/* A full-width row of video cards (older cards), home and subscriptions */
+ytd-browse:not([page-subtype="playlist"], [page-subtype="history"], [page-subtype="you"]) ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:not([is-shorts]) ytd-rich-grid-media) {
+  display: none !important;
+}
+
+/* A shelf of videos with its section ("Videos", "Popular videos", playlists), channel home */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-shelf-renderer yt-lockup-view-model):not(:has(ytd-post-renderer)) {
+  display: none !important;
+}
+
+/* A shelf of videos with its section (older cards), channel home */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-shelf-renderer ytd-grid-video-renderer):not(:has(ytd-post-renderer)) {
+  display: none !important;
+}
+
+/* The autoplaying featured video with its section, channel home */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-channel-video-player-renderer) {
+  display: none !important;
+}
+
+/* A result row with its section, channel page "Search" tab */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-video-renderer):not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}
+
+/* A video row, search results */
+ytd-search ytd-video-renderer:not(:has(a[href^="/shorts/"], [overlay-style="SHORTS"])) {
+  display: none !important;
+}
+
+/* A video, mix or playlist card (new lockup card), search results */
+ytd-search yt-lockup-view-model:not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}
+
+/* A mix row, search results */
+ytd-search ytd-radio-renderer {
+  display: none !important;
+}
+
+/* A playlist row, search results */
+ytd-search ytd-playlist-renderer {
+  display: none !important;
+}
+
+/* A movie row, search results */
+ytd-search ytd-movie-renderer {
+  display: none !important;
+}
+
+/* A shelf of videos ("People also watched", "Latest from ..."), search results */
+ytd-search ytd-shelf-renderer:has(ytd-video-renderer) {
+  display: none !important;
+}
+
+/* A shelf of videos in a horizontal row, search results */
+ytd-search ytd-shelf-renderer:has(ytd-grid-video-renderer) {
+  display: none !important;
+}
+
+/* The artist/topic "watch card" with its videos, right column of search results */
+ytd-search ytd-universal-watch-card-renderer {
+  display: none !important;
+}
+
+/* The suggested-video list beside the player (or under it in the grid layout), watch page */
+ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+}
+
+/* The suggested-video list under the player, mobile watch page */
+ytm-item-section-renderer[section-identifier="related-items"] {
+  display: none !important;
+}
+
+/* A video row, mobile search results */
+ytm-search ytm-video-with-context-renderer:not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}
+
+/* A video card in a grid, mobile home, subscriptions and channel pages */
+ytm-rich-item-renderer:has(ytm-video-with-context-renderer):not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}
+
+/* A video card in a grid (newer media item), mobile home, subscriptions and channel pages */
+ytm-rich-item-renderer:has(ytm-media-item):not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}
+
+/* A video in a compact list, mobile channel home */
+ytm-shelf-renderer ytm-compact-video-renderer:not(:has(a[href^="/shorts/"])) {
+  display: none !important;
+}

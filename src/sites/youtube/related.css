@@ -1,0 +1,12 @@
+/* The "up next" suggestions of the watch page. The player, the
+   description, comments, a playlist panel and live chat stay. */
+
+/* The suggested-video list beside the player (or under it in the grid layout), watch page */
+ytd-watch-next-secondary-results-renderer {
+  display: none !important;
+}
+
+/* The suggested-video list under the player, mobile watch page */
+ytm-item-section-renderer[section-identifier="related-items"] {
+  display: none !important;
+}

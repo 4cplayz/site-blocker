@@ -1,0 +1,32 @@
+/* Video posts: LinkedIn's own player and embedded YouTube / Vimeo videos.
+   The player is mounted lazily, so each rule also accepts the state
+   before it mounts: Ember always has the update-components-linkedin-video
+   wrapper, and both front ends draw the poster from a /videocover- image
+   (an <img> or a background-image in a style attribute). No script is
+   needed to tell a video post from the rest. Each rule hides the whole
+   post; vertical videos in the feed are video posts too. */
+
+/* Ember: a video post with its feed slot (home feed, profile activity, company posts, search) */
+:is([data-id^="urn:li:activity:"], [data-id^="urn:li:aggregate:"], .feed-shared-update-v2):has([class*="linkedin-video"], .update-components-video, [class*="external-video"], [data-vjs-player], video, img[src*="/videocover-"], [style*="/videocover-"], iframe[src*="youtube.com/embed/"], iframe[src*="player.vimeo.com/"], a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"]) {
+  display: none !important;
+}
+
+/* New front end: the home-feed slot of a video post (/feed/, /feed/foryou/) */
+[data-testid="mainFeed"] > [data-lazy-mount-id]:has([data-vjs-player], video, img[src*="/videocover-"], [style*="/videocover-"], iframe[src*="youtube.com/embed/"], iframe[src*="player.vimeo.com/"], a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"]) {
+  display: none !important;
+}
+
+/* New front end: a post card keyed by its feed type or view name (feed tabs, single post, activity lists) */
+:is([componentkey*="FeedType_"], [data-view-name="feed-full-update"]):has([data-vjs-player], video, img[src*="/videocover-"], [style*="/videocover-"], iframe[src*="youtube.com/embed/"], iframe[src*="player.vimeo.com/"], a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"]) {
+  display: none !important;
+}
+
+/* New front end: a post card on company pages ("article") with a video (company posts) */
+main [role="article"]:has([data-vjs-player], video, img[src*="/videocover-"], [style*="/videocover-"], iframe[src*="youtube.com/embed/"], iframe[src*="player.vimeo.com/"]) {
+  display: none !important;
+}
+
+/* New front end: a post result (list item with post text) with a video (search, posts tab) */
+main [role="listitem"]:has([data-testid="expandable-text-box"]):has([data-vjs-player], video, img[src*="/videocover-"], [style*="/videocover-"]) {
+  display: none !important;
+}

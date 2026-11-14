@@ -1,0 +1,12 @@
+/* Instagram, Stories. The viewer itself (/stories/...) is closed by the path rule. */
+
+/* Home feed: the stories tray above the posts (desktop and narrow layouts) */
+[data-pagelet="story_tray"] {
+  display: none !important;
+}
+
+/* The wrappers around the tray that hold nothing else, so no empty band stays above the feed */
+div:has(> [data-pagelet="story_tray"]:only-child),
+div:has(> div:only-child > [data-pagelet="story_tray"]:only-child) {
+  display: none !important;
+}

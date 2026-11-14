@@ -1,0 +1,25 @@
+/* Photo-post tiles in every grid: profile, search (Top and Photos tabs), hashtag, sound and discover pages (the whole grid cell; the tile links to /@user/photo/<id>) */
+[id^="grid-item-container-"]:has(a[href*="/photo/"]) {
+  display: none !important;
+}
+
+/* The same tiles by their list hook, should the grid cell lose its id: profile, search, hashtag and sound grids */
+[data-e2e="user-post-item"]:has(a[href*="/photo/"]),
+[data-e2e="user-repost-item"]:has(a[href*="/photo/"]),
+[data-e2e="user-liked-item"]:has(a[href*="/photo/"]),
+[data-e2e="search_top-item"]:has(a[href*="/photo/"]),
+[data-e2e="search_photo-item"],
+[data-e2e="challenge-item"]:has(a[href*="/photo/"]),
+[data-e2e="music-item"]:has(a[href*="/photo/"]) {
+  display: none !important;
+}
+
+/* A photo post in a one-column feed or a photo link's player: the item holding a photo carousel (slides have no data-e2e: class suffix ImgPhotoSlide) */
+[id^="one-column-item-"]:has([data-e2e="anchoring-photo-control"], img[class*="-ImgPhotoSlide"]) {
+  display: none !important;
+}
+
+/* Photo carousel of a photo post opened from a link (/@user/photo/<id>, detail layout) */
+[data-e2e="detail-photo"] {
+  display: none !important;
+}

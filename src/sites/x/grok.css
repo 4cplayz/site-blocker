@@ -1,0 +1,35 @@
+/* Grok, X's AI assistant. */
+
+/* The Grok entry in the left nav, the mobile bottom bar, the More menu and the mobile side drawer, both clients */
+nav a[href$="/i/grok"],
+[role="menu"] a[href$="/i/grok"],
+[role="dialog"] a[href$="/i/grok"] {
+  display: none !important;
+}
+
+/* The floating Grok drawer at the bottom right, old client */
+[data-testid="GrokDrawer"] {
+  display: none !important;
+}
+
+/* The Grok window in the bottom-right dock, new client */
+[data-slot="xds-dock-window"]:has([data-slot="xds-dock-launcher"] svg[data-icon^="icon-logo-grok"]) {
+  display: none !important;
+}
+
+/* Any button drawn with the Grok logo (Grok on posts, profile summary, dock launcher), new client */
+button:has(svg[data-icon^="icon-logo-grok"]) {
+  display: none !important;
+}
+
+/* The Grok actions button on posts, English and French labels, old client */
+button[aria-label="Grok actions"],
+button[aria-label="Actions Grok"] {
+  display: none !important;
+}
+
+/* The Ask Grok link inside posts and the generate-image button of the post composer, old client */
+[data-testid="tweet"] a[href="/i/grok"],
+button[data-testid="grokImgGen"] {
+  display: none !important;
+}

@@ -1,0 +1,757 @@
+/*
+ * Site Blocker: the one stylesheet (CLAUDE.md § Design rules). Every page
+ * links this and nothing else; no page, script or element carries a colour.
+ *
+ * The tokens are the PM tool's (24-PM-tools/pm-web/app/globals.css), lifted
+ * as they are: three colours, ink, paper and one blue accent; every other
+ * tone a mix of those, named by role. The component classes reproduce its
+ * primitives (components/ui/: button, input, icon button, notice,
+ * segmented) in plain CSS, so the extension reads as the same house.
+ */
+
+/* Inter, self-hosted: the variable file, every weight from 100 to 900. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/inter-latin.woff2") format("woff2");
+}
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* A grey page under white cards. */
+  --paper: #ececec;
+  --surface: #ffffff;
+  --ink: #131316;
+  /* The house blue. 5:1 as text on a white card. */
+  --accent: oklch(55% 0.16 264);
+  /* The one colour outside the three: destructive hovers only. */
+  --danger: oklch(56% 0.21 27);
+  /* What sits on an accent fill (a button's words, a switch's knob): one
+   * light tone in both themes, never the page's grey. */
+  --on-fill: #f7f7f8;
+
+  /* One radius token; the steps derive from it and are the only ones:
+   * sm for a row or a chip, md for a card, a field, a button, lg for a
+   * dialog. A pill or a dot is fully round. */
+  --radius: 2.5px;
+  --radius-sm: var(--radius);
+  --radius-md: calc(var(--radius) * 2);
+  --radius-lg: calc(var(--radius) * 4);
+
+  --font: "Inter", -apple-system, system-ui, "Segoe UI", sans-serif;
+
+  /* The spacing scale: quarter-rem steps, the few the pages use. */
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-1-5: 0.375rem;
+  --space-2: 0.5rem;
+  --space-2-5: 0.625rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Control heights: a field and its button line up at 2rem; the icon
+   * family is 1.75rem. */
+  --control: 2rem;
+  --control-icon: 1.75rem;
+
+  /* Motion: 120 ms, snappy, on transform and opacity only. A colour never
+   * fades: a hover's tint is there at once. */
+  --duration: 120ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --motion:
+    transform var(--duration) var(--ease), opacity var(--duration) var(--ease);
+
+  color-scheme: light;
+}
+
+/* Dark, by the system: soft neutral greys, not near black. The accent and
+ * the danger are not redefined: the same blue and red in both themes. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1c1c1c;
+    --surface: #262626;
+    --ink: #e6e6e6;
+    color-scheme: dark;
+  }
+}
+
+/* Derived tones, declared after the themes so they mix the current values.
+ * Text tones mix from the page; grounds (a line, a row hover, a pressed
+ * tint) mix from the card, which is where each of them sits. */
+:root {
+  --muted: color-mix(in oklab, var(--ink) 58%, var(--paper));
+  --faint: color-mix(in oklab, var(--ink) 34%, var(--paper));
+  --line: color-mix(in oklab, var(--ink) 11%, var(--surface));
+  --hover: color-mix(in oklab, var(--ink) 4.5%, var(--surface));
+  --accent-soft: color-mix(in oklab, var(--accent) 11%, var(--surface));
+  /* The primary button under the pointer (the PM tool's `bg-accent/85`). */
+  --accent-hover: color-mix(in oklab, var(--accent) 85%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Text wraps rather than truncates, and a word longer than its line (a
+   * long domain, a pasted address) breaks rather than leaving its card. */
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  background: transparent;
+  border-radius: 0;
+}
+
+svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+hr {
+  height: 1px;
+  background: var(--line);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Anything that acts on press says so with the cursor. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+label:has(> [role="switch"]:not(:disabled)),
+a[href] {
+  cursor: pointer;
+}
+button:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+
+/* Links and clickable text are the accent, underlined on hover. */
+a[href] {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 0.15em;
+}
+a[href]:hover {
+  text-decoration-line: underline;
+}
+
+/*
+ * Focus. Everything that acts on press takes the 2px accent ring on
+ * keyboard focus. Text entry never does, not the ring and not the browser
+ * default: a boxed field turns its border accent instead (.input).
+ */
+:focus-visible:not(
+    [contenteditable],
+    textarea,
+    input:not([type="checkbox"], [type="radio"], [type="range"])
+  ) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+:is(
+    [contenteditable],
+    textarea,
+    input:not([type="checkbox"], [type="radio"], [type="range"])
+  ):focus {
+  outline: none;
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Type: six steps, the whole typography. Nothing is uppercase.        */
+/* Content 16/24px, chrome 14/21px.                                    */
+/* ------------------------------------------------------------------ */
+
+.text-display {
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+.text-title {
+  font-size: 1.375rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+.text-heading {
+  font-size: 1rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.text-body {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.text-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.text-label {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Colour roles, never colours. No tone class = the parent's colour. */
+.tone-ink {
+  color: var(--ink);
+}
+.tone-muted {
+  color: var(--muted);
+}
+.tone-faint {
+  color: var(--faint);
+}
+.tone-accent {
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Layout                                                              */
+/* ------------------------------------------------------------------ */
+
+/* The options page: one centred column. */
+.page {
+  max-width: 45rem;
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* The toolbar popup: Chrome sizes it to the body. */
+.popup-body {
+  width: 360px;
+}
+.popup {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* The blocked page: one card in the middle of the screen. */
+.blocked {
+  min-height: 100vh;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+.blocked > .card {
+  width: 100%;
+  max-width: 28rem;
+  padding: var(--space-6);
+  gap: var(--space-4);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.stack-tight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+/* Words on the left, a control on the right, the control on the words'
+ * first line. */
+.split {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.split > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A white card on the grey page: no border, no shadow. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+/* A plain line said outside any card (the popup on a browser page). */
+.quiet {
+  padding: var(--space-1) var(--space-1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Icons: Lucide drawings, 16px beside chrome text.                    */
+/* ------------------------------------------------------------------ */
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+}
+.icon-lg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Button (pm-web components/ui/button.tsx, button-variants.ts)        */
+/* One height for every variant, a field's; the label is chrome.       */
+/* ------------------------------------------------------------------ */
+
+.btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1-5);
+  min-height: var(--control);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: var(--motion);
+}
+.btn > .icon {
+  width: 1rem;
+  height: 1rem;
+}
+/* A press sinks it a hair. */
+.btn:not(:disabled):active {
+  transform: scale(0.985);
+}
+.btn:disabled {
+  opacity: 0.5;
+}
+
+/* The one main action in a view: accent ground, light words. */
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-fill);
+}
+.btn-primary:not(:disabled):hover {
+  background: var(--accent-hover);
+}
+
+/* Every other button: a surface ground with a line edge. */
+.btn-secondary {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.btn-secondary:not(:disabled):hover {
+  color: var(--accent);
+}
+
+/* Words only, for an action inside running chrome. */
+.btn-ghost {
+  color: var(--muted);
+}
+.btn-ghost:not(:disabled):hover {
+  color: var(--accent);
+}
+
+/* Destructive: a secondary at rest, red under the pointer only. */
+.btn-danger {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.btn-danger:not(:disabled):hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ------------------------------------------------------------------ */
+/* Icon button (pm-web components/ui/icon-button.tsx): a 28px square,  */
+/* a grey glyph, blue under the pointer, red instead if destructive.   */
+/* ------------------------------------------------------------------ */
+
+.icon-btn {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-icon);
+  height: var(--control-icon);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  transition: var(--motion);
+}
+.icon-btn > .icon {
+  width: 1rem;
+  height: 1rem;
+}
+.icon-btn:not(:disabled):hover {
+  color: var(--accent);
+}
+.icon-btn.is-danger:not(:disabled):hover {
+  color: var(--danger);
+}
+.icon-btn[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.icon-btn:disabled {
+  opacity: 0.4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Input (pm-web components/ui/input.tsx): what is typed is content,   */
+/* the body step; a line edge at rest, fainter under the pointer,      */
+/* accent while focused. The edge is the focus, never a ring.          */
+/* ------------------------------------------------------------------ */
+
+.input {
+  min-width: 0;
+  height: var(--control);
+  padding: 0 var(--space-2-5);
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+}
+.input::placeholder {
+  color: var(--faint);
+}
+.input:not(:disabled):not(:focus):hover {
+  border-color: var(--faint);
+}
+.input:focus {
+  border-color: var(--accent);
+}
+.input:disabled {
+  opacity: 0.5;
+}
+
+/* A field and its buttons on one line; the field takes the room. They
+ * wrap under each other when the line is too narrow. */
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.field-row > .input {
+  flex: 1 1 10rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* An inline password prompt, opened at the control that asked: the reason
+ * on the soft accent, as a notice is, with the field under it. */
+.prompt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+}
+
+/* ------------------------------------------------------------------ */
+/* Notice (pm-web components/ui/notice.tsx): a refusal said inline, on */
+/* the soft accent, never red.                                         */
+/* ------------------------------------------------------------------ */
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--control);
+  padding: var(--space-0-5) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+.notice > .text-small {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.notice:has(> .icon-btn) {
+  padding-right: var(--space-0-5);
+}
+/* Inside a prompt, already on the soft accent, the notice takes the card's
+ * ground so it still reads as its own line. */
+.prompt .notice {
+  background: var(--surface);
+}
+
+/* ------------------------------------------------------------------ */
+/* Segmented (pm-web components/ui/segmented-look.ts): a surface with  */
+/* a line edge holding the options; the chosen one on the soft accent, */
+/* in accent; the rest muted, ink under the pointer.                   */
+/* ------------------------------------------------------------------ */
+
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-self: flex-start;
+  padding: var(--space-0-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.segment {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1-5);
+  padding: var(--space-1) var(--space-2-5);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+}
+.segment:hover {
+  color: var(--ink);
+}
+.segment[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Switch row: a label and its sentence on the left, the switch on the */
+/* label's first line. The whole row is the hit area, so it takes the  */
+/* row hover.                                                          */
+/* ------------------------------------------------------------------ */
+
+.switch-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+
+.switch-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-inline: calc(var(--space-2) * -1);
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+.switch-row:hover {
+  background: var(--hover);
+}
+.switch-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* The site is closed anyway: the parts read as resting, still usable. */
+.switch-row.is-dormant {
+  opacity: 0.5;
+}
+/* A site's daily limit: its words, then the choices under them. */
+.limit-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  padding-block: var(--space-1-5);
+}
+.limit-row.is-dormant {
+  opacity: 0.5;
+}
+.switch-list > hr {
+  margin-block: var(--space-2);
+}
+.dormant-note {
+  padding-bottom: var(--space-1);
+}
+
+/* A pill, so fully round. Off: an empty track with a faint knob. On: the
+ * accent with a light knob. Only the knob moves; a colour never fades. */
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 1.125rem;
+  /* Centred on the first 24px line of the label beside it. */
+  margin-top: 0.1875rem;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--faint);
+  transition: var(--motion);
+}
+.switch-row:hover .switch:not(:disabled)[aria-checked="false"] {
+  border-color: var(--muted);
+}
+.switch-row:hover .switch:not(:disabled)[aria-checked="false"] .switch-knob {
+  background: var(--muted);
+}
+.switch[aria-checked="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.switch[aria-checked="true"] .switch-knob {
+  background: var(--on-fill);
+  transform: translateX(0.875rem);
+}
+.switch:disabled {
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------------ */
+/* Lock status: the padlock on the first line of its words.            */
+/* ------------------------------------------------------------------ */
+
+.lock-status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+.lock-status > .icon {
+  /* A 1lh square for a 24px line: (24 - 16) / 2. */
+  margin-block: var(--space-1);
+  color: var(--muted);
+}
+.lock-status.is-open > .icon {
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Lists in a card                                                     */
+/* ------------------------------------------------------------------ */
+
+.item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  /* The icon button's square sits flush with the card's edge. */
+  margin-right: calc(var(--space-1) * -1);
+}
+.item-head > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.rows > li + li {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+/* The popup's way to the full settings. */
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-1-5);
+  padding-inline: var(--space-1);
+}

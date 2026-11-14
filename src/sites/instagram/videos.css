@@ -1,0 +1,43 @@
+/*
+ * Instagram, Videos: any post whose media is a video. Every new single-video
+ * post has been a reel since 2022, so this covers reels in feeds and grids too
+ * (plus video ads and carousels showing a video); the Reels tab and button are
+ * the Reels switch. "Wrappers that hold nothing else": a parent whose only
+ * element child is the target, up to three levels, so a grid keeps no hole.
+ */
+
+/* Home feed: a post with a mounted <video>, or one that links to a reel (not the "/reels/audio/" song link) */
+main article:has(video),
+main article:has(a[href*="/reel/"]),
+main article:has(a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"])) {
+  display: none !important;
+}
+
+/* Profile, Explore and hashtag grids, suggested-reels rows: a reel link, or a post tile playing a <video> (Explore) or carrying the "Reel", "Clip" or "Video"/"Vidéo" glyph */
+a[href*="/reel/"],
+a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]),
+a[href*="/p/"]:has(video, svg[aria-label="Reel"], svg[aria-label="Clip"], svg[aria-label="Video"], svg[aria-label="Vid\e9o"]) {
+  display: none !important;
+}
+
+/* The wrappers around a reel link that hold nothing else (its grid cell) */
+:is(div, span, li):has(> a[href*="/reel/"]:only-child),
+:is(div, span, li):has(> :only-child > a[href*="/reel/"]:only-child),
+:is(div, span, li):has(> :only-child > :only-child > a[href*="/reel/"]:only-child),
+:is(div, span, li):has(> a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]):only-child),
+:is(div, span, li):has(> :only-child > a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]):only-child),
+:is(div, span, li):has(> :only-child > :only-child > a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]):only-child) {
+  display: none !important;
+}
+
+/* The wrappers around a video post tile that hold nothing else (its grid cell in Explore or a profile) */
+:is(div, span, li):has(> a[href*="/p/"]:only-child :is(video, svg[aria-label="Reel"], svg[aria-label="Clip"], svg[aria-label="Video"], svg[aria-label="Vid\e9o"])),
+:is(div, span, li):has(> :only-child > a[href*="/p/"]:only-child :is(video, svg[aria-label="Reel"], svg[aria-label="Clip"], svg[aria-label="Video"], svg[aria-label="Vid\e9o"])),
+:is(div, span, li):has(> :only-child > :only-child > a[href*="/p/"]:only-child :is(video, svg[aria-label="Reel"], svg[aria-label="Clip"], svg[aria-label="Video"], svg[aria-label="Vid\e9o"])) {
+  display: none !important;
+}
+
+/* Grid cells the classifier marked as video (any grid) */
+[data-sb~="video"] {
+  display: none !important;
+}

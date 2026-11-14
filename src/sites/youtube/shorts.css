@@ -1,0 +1,214 @@
+/* YouTube Shorts: every door into the Shorts product. Desktop (ytd-*) and
+   mobile (ytm-*), both card generations: renderers (ytd-reel-*, overlay
+   style SHORTS) and view models (ytm-shorts-lockup-view-model[-v2],
+   grid-shelf-view-model). */
+
+/* Sidebar (guide) entry "Shorts", desktop left menu; title is "Shorts" in EN and FR */
+ytd-guide-entry-renderer:has(a[title="Shorts"]) {
+  display: none !important;
+}
+
+/* Mini-guide entry "Shorts", desktop collapsed left rail (labels shown) */
+ytd-mini-guide-entry-renderer:has(a[title="Shorts"]) {
+  display: none !important;
+}
+
+/* Mini-guide entry "Shorts", desktop collapsed left rail (labels hidden, aria-label only) */
+ytd-mini-guide-entry-renderer:has(a[aria-label="Shorts"]) {
+  display: none !important;
+}
+
+/* Mini-guide entry "Shorts", older markup with the label on the host element */
+ytd-mini-guide-entry-renderer[aria-label="Shorts"] {
+  display: none !important;
+}
+
+/* Bottom bar entry "Shorts", mobile site (m.youtube.com) */
+ytm-pivot-bar-item-renderer:has(.pivot-shorts) {
+  display: none !important;
+}
+
+/* Shorts shelf row with its wrapper, home and subscriptions grids */
+ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]) {
+  display: none !important;
+}
+
+/* Shorts shelf itself, home and subscriptions grids */
+ytd-rich-shelf-renderer[is-shorts] {
+  display: none !important;
+}
+
+/* Any other full-width grid row made of Shorts cards, home and subscriptions */
+ytd-rich-section-renderer:has(ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* A Shorts card in a grid (new view-model card), home, subscriptions, channel Shorts tab */
+ytd-rich-item-renderer:has(ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* A Shorts card in a grid (any card linking to /shorts/), home, subscriptions, channel pages */
+ytd-rich-item-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A Shorts card in a grid (older card with the SHORTS time badge), home and subscriptions */
+ytd-rich-item-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]) {
+  display: none !important;
+}
+
+/* Shorts shelf (older renderer), search, channel home, watch sidebar, under the description, history */
+ytd-reel-shelf-renderer {
+  display: none !important;
+}
+
+/* Shorts shelf (view model, header "Shorts"), search results and channel home */
+grid-shelf-view-model:has(ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* Shorts shelf as a horizontal list, channel home */
+ytd-shelf-renderer:has(ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* The section holding a Shorts shelf (older renderer), channel home */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-reel-shelf-renderer) {
+  display: none !important;
+}
+
+/* The section holding a Shorts shelf (view model or horizontal list), channel home */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > :is(grid-shelf-view-model, ytd-shelf-renderer) ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* The section holding a Short result row, channel page "Search" tab */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-video-renderer a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A single Shorts card (view model, desktop wrapper) wherever it is left over */
+ytm-shorts-lockup-view-model-v2 {
+  display: none !important;
+}
+
+/* A single Shorts card (view model, inner element on desktop, the card itself on mobile) */
+ytm-shorts-lockup-view-model {
+  display: none !important;
+}
+
+/* A single Shorts card (older renderer), shelves */
+ytd-reel-item-renderer {
+  display: none !important;
+}
+
+/* A Short shown as a list row, search results and subscriptions list view */
+ytd-video-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A Short shown as a list row (SHORTS time badge), search results */
+ytd-video-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]) {
+  display: none !important;
+}
+
+/* A Short in an older grid, subscriptions and channel pages */
+ytd-grid-video-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A Short in an older grid (SHORTS time badge), subscriptions and channel pages */
+ytd-grid-video-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style="SHORTS"]) {
+  display: none !important;
+}
+
+/* A Short in the watch-page sidebar (older compact card) */
+ytd-compact-video-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A Short in the watch-page sidebar (new lockup card) */
+yt-lockup-view-model:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* "New Short" notification, bell menu */
+ytd-notification-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* Shorts tab, channel page tab bar (desktop and mobile); title is "Shorts" in EN and FR */
+yt-tab-shape[tab-title="Shorts"] {
+  display: none !important;
+}
+
+/* Shorts filter chip (marked by classify.js: CSS cannot read the chip text), search page */
+yt-chip-cloud-chip-renderer[data-sb~="short"] {
+  display: none !important;
+}
+
+/* Shorts filter chip (new chip model, marked by classify.js), chip bars */
+chip-view-model[data-sb~="short"] {
+  display: none !important;
+}
+
+/* Shorts filter chip (new chip model, label in aria-label), chip bars */
+chip-view-model:has(button[aria-label="Shorts"]) {
+  display: none !important;
+}
+
+/* Shorts entry of the search filter panel ("Search for Shorts" / "Rechercher par Shorts") */
+ytd-search-filter-renderer:has(#label[title$=" Shorts"]) {
+  display: none !important;
+}
+
+/* Shorts shelf row, mobile home and subscriptions */
+ytm-rich-section-renderer:has(ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* Shorts shelf row (older renderer), mobile home */
+ytm-rich-section-renderer:has(ytm-reel-shelf-renderer) {
+  display: none !important;
+}
+
+/* Shorts shelf (older renderer), mobile search, channel and watch pages */
+ytm-reel-shelf-renderer {
+  display: none !important;
+}
+
+/* A Shorts card in a grid, mobile home, subscriptions and channel pages */
+ytm-rich-item-renderer:has(ytm-shorts-lockup-view-model) {
+  display: none !important;
+}
+
+/* A Shorts card in a grid (any card linking to /shorts/), mobile */
+ytm-rich-item-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A Short shown as a list row, mobile search and feeds */
+ytm-video-with-context-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* A Short shown as a list row (SHORTS time badge), mobile search and feeds */
+ytm-video-with-context-renderer:has(ytm-thumbnail-overlay-time-status-renderer[data-style="SHORTS"]) {
+  display: none !important;
+}
+
+/* A Short in a compact list, mobile channel home */
+ytm-compact-video-renderer:has(a[href^="/shorts/"]) {
+  display: none !important;
+}
+
+/* Shorts filter chip (marked by classify.js), mobile search and home */
+ytm-chip-cloud-chip-renderer[data-sb~="short"] {
+  display: none !important;
+}
+
+/* Shorts filter chip (label in aria-label), mobile search and home */
+ytm-chip-cloud-chip-renderer:has([aria-label="Shorts"]) {
+  display: none !important;
+}

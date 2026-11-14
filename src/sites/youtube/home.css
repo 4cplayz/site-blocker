@@ -1,0 +1,12 @@
+/* The home page feed: the page stays (search bar, left menu) but has
+   nothing to scroll. Subscriptions, search and channels are untouched. */
+
+/* The whole home feed (chips, recommendation grid, shelves), desktop home page "/" */
+ytd-browse[page-subtype="home"] {
+  display: none !important;
+}
+
+/* The recommendation grid, mobile home tab */
+div[tab-identifier="FEwhat_to_watch"] .rich-grid-renderer-contents {
+  display: none !important;
+}

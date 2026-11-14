@@ -1,0 +1,35 @@
+/* Image posts: a photo, several photos, or a document (the PDF "carousel",
+   a swipe-through deck of page images, so it counts as images here).
+   Two front ends are live and a member gets one of them: the Ember one
+   (hand-written BEM classes, data-id / data-urn) and the rebuilt
+   server-driven one (generated classes; only componentkey, data-testid,
+   role, and on some accounts data-view-name, are stable). Uploaded media
+   names its kind in its address on both: /feedshare-shrink_ is a posted
+   photo, /feedshare-document-images_ a document page; avatars, logos,
+   link previews (/articleshare-) and comment images (/comment-image-)
+   never match. Each rule hides the whole post. */
+
+/* Ember: a photo or document post with its feed slot (home feed, profile activity, company posts, search) */
+:is([data-id^="urn:li:activity:"], [data-id^="urn:li:aggregate:"], .feed-shared-update-v2):has(.update-components-image, .feed-shared-image, .update-components-document, .update-components-document__container, .feed-shared-document, .document-s-container, img[src*="/feedshare-shrink_"], img[src*="/feedshare-document"]) {
+  display: none !important;
+}
+
+/* New front end: the home-feed slot of a photo or document post (/feed/, /feed/foryou/) */
+[data-testid="mainFeed"] > [data-lazy-mount-id]:has([data-view-name="feed-update-image"], [data-view-name="feed-document-container"], img[src*="/feedshare-shrink_"], img[src*="/feedshare-document"]) {
+  display: none !important;
+}
+
+/* New front end: a post card keyed by its feed type or view name (feed tabs, single post, activity lists) */
+:is([componentkey*="FeedType_"], [data-view-name="feed-full-update"]):has([data-view-name="feed-update-image"], [data-view-name="feed-document-container"], img[src*="/feedshare-shrink_"], img[src*="/feedshare-document"]) {
+  display: none !important;
+}
+
+/* New front end: a post card on company pages ("article") with a photo or document (company posts) */
+main [role="article"]:has([data-view-name="feed-update-image"], [data-view-name="feed-document-container"], img[src*="/feedshare-shrink_"], img[src*="/feedshare-document"]) {
+  display: none !important;
+}
+
+/* New front end: a post result (list item with post text) with a photo or document (search, posts tab) */
+main [role="listitem"]:has([data-testid="expandable-text-box"]):has(img[src*="/feedshare-shrink_"], img[src*="/feedshare-document"]) {
+  display: none !important;
+}

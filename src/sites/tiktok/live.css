@@ -1,0 +1,19 @@
+/* LIVE and Go LIVE entries in the side menu */
+[data-e2e="nav-live"],
+[data-e2e="nav-go-live"],
+[data-e2e="go-live-entrance"] {
+  display: none !important;
+}
+
+/* Links to LIVE: a creator's stream (avatars with a LIVE ring, /@user/live) and LIVE pages (/live/...) */
+a[href$="/live"],
+a[href*="/live?"],
+a[href*="/live/"] {
+  display: none !important;
+}
+
+/* LIVE tiles in search results (Top and LIVE tabs): the grid cell holding a search_live tile */
+[id^="grid-item-container-"]:has([data-e2e="search_live-item"]),
+[data-e2e="search_live-item"] {
+  display: none !important;
+}

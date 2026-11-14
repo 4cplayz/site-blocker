@@ -1,0 +1,58 @@
+/*
+ * Instagram, Reels: the Reels product and every door into it.
+ * "Wrappers that hold nothing else" below: a parent whose only element child
+ * is the target, up to three levels, so the bar or grid keeps no hole.
+ * Nothing is lost by hiding one: by construction it contains only the target.
+ */
+
+/* Reels button (desktop sidebar, narrow bottom bar, "/reels/") and the Reels tab on a profile ("/<user>/reels/") */
+a[href$="/reels/"] {
+  display: none !important;
+}
+
+/* The wrappers around that button or tab that hold nothing else (the nav entry, the tab cell) */
+:is(div, span, li):has(> a[href$="/reels/"]:only-child),
+:is(div, span, li):has(> :only-child > a[href$="/reels/"]:only-child),
+:is(div, span, li):has(> :only-child > :only-child > a[href$="/reels/"]:only-child) {
+  display: none !important;
+}
+
+/* Home feed: a post that links to a reel ("/reel/", "/<user>/reel/", "/reels/<code>/"), not the "/reels/audio/" song link a photo can carry */
+main article:has(a[href*="/reel/"]),
+main article:has(a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"])) {
+  display: none !important;
+}
+
+/* Profile, Reels-tab, Explore and hashtag grids, suggested-reels rows, notifications: a reel link, or a post tile with the "Reel" (Explore) or "Clip" (profile) glyph, same words in French */
+a[href*="/reel/"],
+a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]),
+a[href*="/p/"]:has(svg[aria-label="Reel"], svg[aria-label="Clip"]) {
+  display: none !important;
+}
+
+/* The wrappers around such a reel link that hold nothing else (its grid cell) */
+:is(div, span, li):has(> a[href*="/reel/"]:only-child),
+:is(div, span, li):has(> :only-child > a[href*="/reel/"]:only-child),
+:is(div, span, li):has(> :only-child > :only-child > a[href*="/reel/"]:only-child),
+:is(div, span, li):has(> a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]):only-child),
+:is(div, span, li):has(> :only-child > a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]):only-child),
+:is(div, span, li):has(> :only-child > :only-child > a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]):only-child) {
+  display: none !important;
+}
+
+/* The wrappers around a "Reel" / "Clip" post tile that hold nothing else (its grid cell in Explore or a profile) */
+:is(div, span, li):has(> a[href*="/p/"]:only-child svg:is([aria-label="Reel"], [aria-label="Clip"])),
+:is(div, span, li):has(> :only-child > a[href*="/p/"]:only-child svg:is([aria-label="Reel"], [aria-label="Clip"])),
+:is(div, span, li):has(> :only-child > :only-child > a[href*="/p/"]:only-child svg:is([aria-label="Reel"], [aria-label="Clip"])) {
+  display: none !important;
+}
+
+/* Messages: a reel shared in a thread, its preview carries the "Clip" glyph (desktop opens it in a modal, no URL to close) */
+[role="button"]:has(svg[aria-label="Clip"]) {
+  display: none !important;
+}
+
+/* Grid cells the classifier marked as reels (any grid) */
+[data-sb~="short"] {
+  display: none !important;
+}

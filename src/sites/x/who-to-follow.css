@@ -1,0 +1,30 @@
+/* Account suggestions. Follower and following lists are not touched. */
+
+/* The Follow entry (/i/connect_people) in the left nav, the More menu and the mobile side drawer, both clients */
+nav a[href*="/i/connect_people"],
+[role="menu"] a[href*="/i/connect_people"],
+[role="dialog"] a[href*="/i/connect_people"] {
+  display: none !important;
+}
+
+/* The Who to follow / You might like / Relevant people box (an aside with user cells or a Show more link), right sidebar, old client */
+[data-testid="sidebarColumn"] div:has(> aside[role="complementary"] [data-testid="UserCell"]),
+[data-testid="sidebarColumn"] div:has(> aside[role="complementary"] a[href*="/i/connect_people"]) {
+  display: none !important;
+}
+
+/* The You might like box under a profile header after following, main column, old client */
+[data-testid="primaryColumn"] aside[role="complementary"]:has([data-testid="UserCell"]) {
+  display: none !important;
+}
+
+/* The Who to follow / You might like box (Show more link to /i/connect_people), right sidebar, new client */
+aside section:has(a[href^="/i/connect_people"]),
+aside section:has([data-who-to-follow]) {
+  display: none !important;
+}
+
+/* The suggestion block itself wherever it renders, new client */
+[data-who-to-follow] {
+  display: none !important;
+}

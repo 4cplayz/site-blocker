@@ -1,0 +1,34 @@
+/* Explore, trends and news. The search box at the top of the sidebar stays. */
+
+/* The Explore entry in the left nav and the mobile bottom bar, both clients */
+nav a[href="/explore"],
+a[data-testid="AppTabBar_Explore_Link"] {
+  display: none !important;
+}
+
+/* The Explore entry in the More menu and the mobile side drawer, both clients */
+[role="menu"] a[href="/explore"],
+[role="dialog"] a[href="/explore"] {
+  display: none !important;
+}
+
+/* The "What's happening" trends box (the box around its section), right sidebar, old client */
+[data-testid="sidebarColumn"] div:has(> section [data-testid="trend"]) {
+  display: none !important;
+}
+
+/* The "Today's News" box, right sidebar, old client */
+[data-testid="sidebarColumn"] div:has(> [data-testid="news_sidebar"]) {
+  display: none !important;
+}
+
+/* The trends box (urt:explore-sidebar timeline) and the news box (links to /i/trending/<id>), right sidebar, new client */
+aside section:has([id^="urt:explore-sidebar"]),
+aside section:has(a[href^="/i/trending/"]) {
+  display: none !important;
+}
+
+/* The trends timeline itself, in case it renders outside a section, right sidebar, new client */
+[id^="urt:explore-sidebar"] {
+  display: none !important;
+}

@@ -1,0 +1,36 @@
+/* Comments under videos, Shorts and posts. Live chat is not touched. */
+
+/* The comment section, under the player on the watch page and under a post */
+ytd-comments {
+  display: none !important;
+}
+
+/* The "Comments" teaser that opens the comment panel, watch page in narrow layouts */
+ytd-comments-entry-point-header-renderer {
+  display: none !important;
+}
+
+/* The comment teaser card in the carousel under the title, watch page in narrow layouts */
+yt-carousel-item-view-model:has(yt-comment-teaser-carousel-item-view-model) {
+  display: none !important;
+}
+
+/* The "add a comment" card in the carousel under the title, watch page in narrow layouts */
+yt-carousel-item-view-model:has(yt-comment-input-box-carousel-item-view-model) {
+  display: none !important;
+}
+
+/* The comment side panel, watch page */
+ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"] {
+  display: none !important;
+}
+
+/* The comment side panel, Shorts player */
+ytd-engagement-panel-section-list-renderer[target-id="shorts-engagement-panel-comments-section"] {
+  display: none !important;
+}
+
+/* The "Comments" teaser under the player, mobile watch page (older layout) */
+ytm-comments-entry-point-header-renderer {
+  display: none !important;
+}

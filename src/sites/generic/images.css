@@ -1,0 +1,8 @@
+/* Every picture on the page: photos, and the logos and icons drawn as
+ * images with them. A site added by hand has no markup we know, so this is
+ * the blunt version on purpose. */
+img,
+picture,
+svg image {
+  display: none !important;
+}

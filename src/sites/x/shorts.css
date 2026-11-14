@@ -1,0 +1,26 @@
+/* X's short-form product on the web is the immersive viewer: a full-screen,
+   swipe-up feed of videos at /<user>/status/<id>/mediaviewer (page title
+   "Videos"). There is no Videos tab or nav entry on the web; the app's
+   Video tab is iOS only. Its doors are the Expand button of in-feed video
+   players and, in the narrow layout, a tap on the video itself (left to
+   the path rule, since hiding it would hide the video). */
+
+/* The full-screen immersive viewer overlay, new client */
+[data-immersive-viewer] {
+  display: none !important;
+}
+
+/* The immersive viewer's video feed (urt:immersive:… and urt:immersive-profile:… lists), new client */
+[id^="urt:immersive"] {
+  display: none !important;
+}
+
+/* The Expand button in an in-feed video player's controls, which opens the immersive viewer, new client */
+button:has(svg[data-icon="icon-video-hub"]) {
+  display: none !important;
+}
+
+/* The vertical swipe media viewer at …/mediaviewer, old client in the narrow (mobile) layout */
+[data-testid="vss-scroll-view"] {
+  display: none !important;
+}

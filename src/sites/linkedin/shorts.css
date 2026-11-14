@@ -1,0 +1,27 @@
+/* LinkedIn's short-form vertical video: the "Videos for you" strip in the
+   feed (its door into the full-screen player) and a Video tab in the top
+   bar. The strip has no stable name of its own on either front end, so it
+   is matched by what only it holds: several list items with a video (or a
+   video poster) past the first one. A normal post never has two videos.
+   The full-screen player is not hidden here: it is a modal dialog, and a
+   hidden modal would leave the page frozen behind it. */
+
+/* Ember: the "Videos for you" feed unit, a carousel of videos (home feed) */
+:is(.scaffold-finite-scroll__content > div, [data-id^="urn:li:"], .feed-shared-update-v2):has(li ~ li :is(video, [data-vjs-player], [class*="linkedin-video"], img[src*="/videocover-"], [style*="/videocover-"])) {
+  display: none !important;
+}
+
+/* New front end: the home-feed slot or feed card holding the "Videos for you" carousel (/feed/, /feed/foryou/) */
+:is([data-testid="mainFeed"] > [data-lazy-mount-id], [data-testid="mainFeed"] [role="listitem"], [componentkey*="FeedType_"], [data-view-name="feed-full-update"]):has(li ~ li :is(video, [data-vjs-player], img[src*="/videocover-"], [style*="/videocover-"])) {
+  display: none !important;
+}
+
+/* New front end: the video carousel strip itself, if its feed unit has some other wrapper (home feed) */
+[data-testid="mainFeed"] :is([data-testid="carousel-container"], [data-view-name="feed-update-carousel"]):has(li ~ li :is(video, [data-vjs-player], img[src*="/videocover-"], [style*="/videocover-"])) {
+  display: none !important;
+}
+
+/* A "Video" tab in the top navigation bar, for members who have one (every page; LinkedIn Live links excluded) */
+header li:has(a[href*="/video"]:not([href*="/video/live"]):not([href*="/video/event"])) {
+  display: none !important;
+}

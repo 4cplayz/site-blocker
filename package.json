@@ -1,0 +1,14 @@
+{
+  "name": "site-blocker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A personal Chrome extension: a black zone for whole sites, and switches for parts of others.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/check-sites.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "e2e": "node scripts/e2e.mjs",
+    "verify": "npm run check && npm run build && npm run e2e"
+  }
+}

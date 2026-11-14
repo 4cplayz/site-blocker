@@ -1,0 +1,34 @@
+/* The algorithmic For you feed on Home. Home has one address for both tabs,
+   so the feed is hidden while its tab is selected; picking Following shows
+   the Following feed. */
+
+/* The For you tab, first tab on Home (both tabs link to /home), old client */
+[data-testid="primaryColumn"] [role="tablist"] > div:first-child:has(> [role="tab"][href="/home"]) {
+  display: none !important;
+}
+
+/* The Home timeline while the For you tab is selected, old client */
+[data-testid="primaryColumn"]:has([role="tablist"] > div:first-child > [role="tab"][href="/home"][aria-selected="true"]) section[aria-labelledby^="accessible-list"] {
+  display: none !important;
+}
+
+/* The same two, old client, on an account with pinned lists or communities
+   (seen live 2026-11-14): there the Home tabs are buttons with no link, so
+   Home is told from the other pages by its inline composer. */
+[data-testid="primaryColumn"]:has([data-testid="tweetTextarea_0"]) [role="tablist"] > div:first-child:has(> div[role="tab"]:not([href])) {
+  display: none !important;
+}
+[data-testid="primaryColumn"]:has([data-testid="tweetTextarea_0"]):has([role="tablist"] > div:first-child > div[role="tab"][aria-selected="true"]:not([href])) section[aria-labelledby^="accessible-list"] {
+  display: none !important;
+}
+
+/* The For you tab on Home, new client */
+[role="tab"][data-pinned-timeline="for-you"] {
+  display: none !important;
+}
+
+/* The For you feed and its topic sub-feeds on Home, new client */
+[id="urt:home:for-you"],
+[id^="urt:home:topic:"] {
+  display: none !important;
+}

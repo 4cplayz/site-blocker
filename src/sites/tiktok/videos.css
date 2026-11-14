@@ -1,0 +1,21 @@
+/* Video tiles in every grid: a creator's posts, reposts and likes, search results, hashtag, sound and discover pages (the whole grid cell; the tile links to /@user/video/<id>) */
+[id^="grid-item-container-"]:has(a[href*="/video/"]) {
+  display: none !important;
+}
+
+/* The same tiles by their list hook, should the grid cell lose its id: profile, search, hashtag and sound grids */
+[data-e2e="user-post-item"]:has(a[href*="/video/"]),
+[data-e2e="user-repost-item"]:has(a[href*="/video/"]),
+[data-e2e="user-liked-item"]:has(a[href*="/video/"]),
+[data-e2e="search_top-item"]:has(a[href*="/video/"]),
+[data-e2e="search_video-item"]:has(a[href*="/video/"]),
+[data-e2e="challenge-item"]:has(a[href*="/video/"]),
+[data-e2e="music-item"]:has(a[href*="/video/"]) {
+  display: none !important;
+}
+
+/* Related videos beside a single video ("You may like" side panel, related cards) */
+[data-testid="outer-loop-sidebar-related-panel"],
+[data-e2e="video-detail-related-video"] {
+  display: none !important;
+}

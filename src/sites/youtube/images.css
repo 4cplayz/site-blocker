@@ -1,0 +1,85 @@
+/* YouTube community posts: the image product of YouTube (single images,
+   carousels, and the text and poll posts that share the same cards and
+   tab). Posts are still renderers in 2026 (no view-model replacement yet):
+   ytd-post-renderer in feeds, ytd-backstage-post-thread-renderer on the
+   Posts tab and post pages. */
+
+/* "Latest posts" row with its wrapper, home and subscriptions grids */
+ytd-rich-section-renderer:has(ytd-rich-item-renderer[is-post]) {
+  display: none !important;
+}
+
+/* A single post card in a grid, home and subscriptions */
+ytd-rich-item-renderer[is-post] {
+  display: none !important;
+}
+
+/* The "Posts" shelf with its section, channel home */
+ytd-browse[page-subtype="channels"] ytd-item-section-renderer:has(> #contents > ytd-shelf-renderer ytd-post-renderer) {
+  display: none !important;
+}
+
+/* The "Posts" shelf, wherever else it appears */
+ytd-shelf-renderer:has(ytd-post-renderer) {
+  display: none !important;
+}
+
+/* A post card (feed form), any page */
+ytd-post-renderer {
+  display: none !important;
+}
+
+/* A reposted post card, any page */
+ytd-shared-post-renderer {
+  display: none !important;
+}
+
+/* A members-only locked post, channel Posts tab */
+ytd-backstage-locked-post-view-model {
+  display: none !important;
+}
+
+/* A post with its replies link, channel Posts tab and the /post/ page */
+ytd-backstage-post-thread-renderer {
+  display: none !important;
+}
+
+/* A post body outside a thread, channel Posts tab */
+ytd-backstage-post-renderer {
+  display: none !important;
+}
+
+/* Posts tab, channel page tab bar; title is "Posts" in EN and FR */
+yt-tab-shape[tab-title="Posts"] {
+  display: none !important;
+}
+
+/* Posts tab under its former name (EN), channel page tab bar */
+yt-tab-shape[tab-title="Community"] {
+  display: none !important;
+}
+
+/* Posts tab under its former name (FR), channel page tab bar */
+yt-tab-shape[tab-title="Communauté"] {
+  display: none !important;
+}
+
+/* "New post" notification, bell menu */
+ytd-notification-renderer:has(a[href^="/post/"]) {
+  display: none !important;
+}
+
+/* A post card, mobile site */
+ytm-post-renderer {
+  display: none !important;
+}
+
+/* A post with its replies link, mobile channel Posts tab and /post/ page */
+ytm-backstage-post-thread-renderer {
+  display: none !important;
+}
+
+/* "Latest posts" row, mobile home */
+ytm-rich-section-renderer:has(ytm-post-renderer) {
+  display: none !important;
+}

@@ -1,0 +1,25 @@
+/* Puzzles (Queens, Tango, Zip, Pinpoint, Crossclimb, Mini Sudoku, Patches):
+   the "Today's puzzles" box, the game rows on My Network, and posts that
+   share a puzzle result. The /games/ pages are closed by the feature's
+   path rule. A game link is matched by its address from the site root,
+   so a company or hashtag that merely contains "games" is left alone. */
+
+/* Ember: the "Today's puzzles" block inside the right-column news card (home feed) */
+div:has(> .news-module__subheader > #todays-games-entrypoint-title) {
+  display: none !important;
+}
+
+/* New front end: the right-column puzzles box, when it is a box of its own (home feed) */
+aside > div > div:has(a[href*="linkedin.com/games/"], a[href^="/games/"]):not(:has(a[href*="/news/story/"])) {
+  display: none !important;
+}
+
+/* Any front end: a row or card that is just a link to a game (right column, My Network page) */
+:is(aside, main) :is(li, div):has(> a[href*="linkedin.com/games/"], > a[href^="/games/"]) {
+  display: none !important;
+}
+
+/* Any front end: a post that shares a puzzle result (home feed, profile activity) */
+:is([data-testid="mainFeed"] > [data-lazy-mount-id], [componentkey*="FeedType_"], [data-view-name="feed-full-update"], [data-id^="urn:li:activity:"], .feed-shared-update-v2):has(a[href*="linkedin.com/games/"], a[href^="/games/"]) {
+  display: none !important;
+}

@@ -1,0 +1,24 @@
+/* The home feed: the posts go, the page stays. The "Start a post" box,
+   the top bar, messaging, jobs, search, notifications, profiles and a
+   single post opened from a link are untouched. */
+
+/* New front end: every post after the "Start a post" box, "For you" tab (/feed/, /feed/foryou/) */
+[data-testid="mainFeed"] > :not(:first-child),
+[componentkey^="container-update-list_mainFeed"] > :not(:first-child) {
+  display: none !important;
+}
+
+/* New front end: the post list of the "Network" tab (/feed/network/) */
+[componentkey^="container-update-list_NetworkFeedListCollection"] {
+  display: none !important;
+}
+
+/* Ember: the post list, on the page that has the feed's "Sort by" bar (/feed/) */
+main:has(.feed-sort-toggle-dsa__wrapper) :is(.scaffold-finite-scroll, [data-finite-scroll-hotkey-context="FEED"]) {
+  display: none !important;
+}
+
+/* Ember: the "Sort by" bar over the post list (/feed/) */
+.feed-sort-toggle-dsa__wrapper {
+  display: none !important;
+}

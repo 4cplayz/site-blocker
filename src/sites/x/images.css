@@ -1,0 +1,35 @@
+/* Posts with photos. A video's poster sits in X's tweetPhoto box too, and
+   a GIF can even carry a /photo/1 address, so neither counts: a photo is
+   a "View media" link ending /photo/N (new client) or such a link around a
+   pbs.twimg.com/media/ image (old client). The /media/ image alone is not
+   enough: videos with a custom thumbnail use one as their poster.
+   Link-preview cards (card_img images, t.co links) are not touched.
+
+   Old client: the virtual list re-measures a cell whose content is hidden
+   down to zero height, so the cell's inner box is hidden and the cell
+   stays, as Control Panel for Twitter does.
+   New client: a virtual row measured at zero height keeps its old offset
+   and leaves a blank (Control Panel for Twitter PR #973), so the content
+   of the post box is hidden and its padding and divider stay, a strip of
+   about 25px that keeps the list measuring. */
+
+/* A timeline cell whose post shows a photo, old client: home, profiles, search, replies, lists */
+[data-testid="cellInnerDiv"] > div:has(a[href*="/photo/"] img[src*="//pbs.twimg.com/media/"]) {
+  display: none !important;
+}
+
+/* A timeline cell whose quoted post shows a photo (quote boxes are role=link, without photo links), old client */
+[data-testid="cellInnerDiv"] > div:has([role="link"] [data-testid="tweetPhoto"] img[src*="//pbs.twimg.com/media/"]) {
+  display: none !important;
+}
+
+/* The content of a post box (card or focused post; own or quoted media) with a photo link, new client: every urt: timeline */
+[id^="urt:"] [data-navigation-stop]:not([data-slot="embedded-tweet-frame"]):has(a[href$="/photo/1"], a[href$="/photo/2"], a[href$="/photo/3"], a[href$="/photo/4"]) > *,
+[id^="urt:"] [role="link"][data-href]:not([data-slot="embedded-tweet-frame"]):has(a[href$="/photo/1"], a[href$="/photo/2"], a[href$="/photo/3"], a[href$="/photo/4"]) > * {
+  display: none !important;
+}
+
+/* The photo grid of a profile's Media tab (?filter=photo), new client */
+[id^="urt:photos:"] {
+  display: none !important;
+}

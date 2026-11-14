@@ -1,0 +1,42 @@
+/* Side menu entries that open a feed: For You, Following, Friends, Explore, LIVE, short dramas (left sidebar) */
+[data-e2e="nav-foryou"],
+[data-e2e="nav-following"],
+[data-e2e="nav-friends"],
+[data-e2e="nav-explore"],
+[data-e2e="nav-live"],
+[data-e2e="nav-short-drama"] {
+  display: none !important;
+}
+
+/* Other links into the closed feed pages ("see all" links, footers, collapsed menu) */
+a[href="/foryou"],
+a[href^="/foryou?"],
+a[href="/following"],
+a[href^="/following?"],
+a[href="/friends"],
+a[href^="/friends?"],
+a[href="/explore"],
+a[href^="/explore?"],
+a[href="/live"],
+a[href^="/live?"],
+a[href^="/shortdrama"] {
+  display: none !important;
+}
+
+/* Main column of the For You, Following and Explore feeds, in case one draws before its redirect */
+#main-content-homepage_hot,
+#main-content-homepage_follow,
+#main-content-explore_page {
+  display: none !important;
+}
+
+/* "You may like" list beside a single video (side panel of the video page, related cards) */
+[data-testid="outer-loop-sidebar-related-panel"],
+[data-e2e="video-detail-related-video"] {
+  display: none !important;
+}
+
+/* Next videos stacked under a video opened from a link: every item of the one-column player but the first */
+[id^="one-column-item-"]:not(#one-column-item-0) {
+  display: none !important;
+}

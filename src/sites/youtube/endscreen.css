@@ -1,0 +1,35 @@
+/* Suggestions drawn inside the video player. The player has no custom
+   elements, only its own long-lived ytp-* / html5-* class names (not
+   generated hashes), so those are used here. The autoplay countdown is
+   left visible on purpose: it is a separate player layer, and hiding it
+   would not stop autoplay, only take away its Cancel button. */
+
+/* The wall of suggested videos when a video ends, watch page and embeds */
+.html5-endscreen {
+  display: none !important;
+}
+
+/* The creator's end-screen cards (next video, playlist, channel, link) over the last seconds, player */
+.ytp-ce-element {
+  display: none !important;
+}
+
+/* The info-card teaser that slides in at the top right, player */
+.ytp-cards-teaser {
+  display: none !important;
+}
+
+/* The info-card "i" button, player top right */
+.ytp-cards-button {
+  display: none !important;
+}
+
+/* The "More videos" strip shown when an embedded video is paused, embeds on other sites */
+.ytp-pause-overlay {
+  display: none !important;
+}
+
+/* The suggested-video grid under the controls in full screen, player */
+.ytp-fullscreen-grid-stills-container {
+  display: none !important;
+}

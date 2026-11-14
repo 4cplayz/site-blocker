@@ -1,0 +1,20 @@
+/*
+ * Instagram, Photos: photo posts and photo carousels. A tile is a photo when
+ * it shows an image and carries no video sign: no <video>, no reel link, no
+ * "Reel", "Clip" or "Video"/"Vidéo" glyph ("Carousel" tiles are photos).
+ */
+
+/* Home feed: a post with no <video> and no reel link (the "/reels/audio/" song link a photo can carry does not count) */
+main article:not(:has(video)):not(:has(a[href*="/reel/"])):not(:has(a[href*="/reels/"]:not([href$="/reels/"]):not([href*="/reels/audio/"]))) {
+  display: none !important;
+}
+
+/* Profile, Explore and hashtag grids: a post tile showing a photo with no video sign (the link only; its cell is the classifier's mark below) */
+main a[href*="/p/"]:not([href*="/liked_by/"]):not(article a):has(img):not(:has(video, svg[aria-label="Reel"], svg[aria-label="Clip"], svg[aria-label="Video"], svg[aria-label="Vid\e9o"])) {
+  display: none !important;
+}
+
+/* Grid cells the classifier marked as photos: CSS cannot name a photo tile's wrapper, :has() does not nest */
+[data-sb~="image"] {
+  display: none !important;
+}

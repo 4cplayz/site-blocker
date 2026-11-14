@@ -1,0 +1,23 @@
+/* Posts with a video or a GIF. Both clients render a real <video> (with a
+   *_video_thumb poster, or a custom /media/ one) for videos and GIFs alike;
+   the old client also wraps it in videoPlayer / videoComponent, or shows a
+   playButton before it loads. A video card (ad, broadcast) counts; a link
+   card that only shows a thumbnail (YouTube) does not.
+   Hiding method per client: see images.css. */
+
+/* A timeline cell whose post, quoted post or card plays a video or GIF, old client: home, profiles, search, replies, lists */
+[data-testid="cellInnerDiv"] > div:has([data-testid="videoPlayer"], [data-testid="videoComponent"], [data-testid="playButton"], video, img[src*="_video_thumb/"], a[href$="/video/1"], a[href$="/video/2"], a[href$="/video/3"], a[href$="/video/4"]) {
+  display: none !important;
+}
+
+/* The content of a post box (card or focused post; own or quoted media) with a video or GIF, new client: every urt: timeline */
+[id^="urt:"] [data-navigation-stop]:not([data-slot="embedded-tweet-frame"]):has(video, img[src*="_video_thumb/"], a[href$="/video/1"], a[href$="/video/2"], a[href$="/video/3"], a[href$="/video/4"]) > *,
+[id^="urt:"] [role="link"][data-href]:not([data-slot="embedded-tweet-frame"]):has(video, img[src*="_video_thumb/"], a[href$="/video/1"], a[href$="/video/2"], a[href$="/video/3"], a[href$="/video/4"]) > * {
+  display: none !important;
+}
+
+/* The video and live grids of a profile's Media tab (?filter=video, ?filter=live), new client */
+[id^="urt:videos:"],
+[id^="urt:live:"] {
+  display: none !important;
+}

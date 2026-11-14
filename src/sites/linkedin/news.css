@@ -1,0 +1,20 @@
+/* LinkedIn News: the box of headlines in the right column of the home
+   feed. Its story pages are closed by the feature's path rule. */
+
+/* Ember: the LinkedIn News card in the right column (home feed) */
+#feed-news-module,
+.artdeco-card:has(> #feed-news-module),
+.artdeco-card:has(> .news-module) {
+  display: none !important;
+}
+
+/* New front end, accounts with view names: the LinkedIn News module in the right column (home feed) */
+[data-view-name="news-module"],
+div:has(> div > [data-view-name="news-module"]) {
+  display: none !important;
+}
+
+/* New front end: the right-column box that lists /news/story/ headlines (home feed) */
+aside > div > div:has(a[href*="/news/story/"]) {
+  display: none !important;
+}

@@ -1,0 +1,17 @@
+/* Comment threads under and beside a video: video page, side panel, immersive player (no data-e2e on the list: class suffix) */
+[class*="-DivCommentListContainer"] {
+  display: none !important;
+}
+
+/* "Add comment" box with its @, emoji and Post buttons (no data-e2e on its container: class suffix) */
+[class*="-DivCommentInputWrapper"],
+[class*="-DivCommentInputContainer"],
+[data-e2e="comment-input"] {
+  display: none !important;
+}
+
+/* Comment button and its count on a video's action bar */
+[data-e2e="comment-icon"],
+[data-e2e="comment-count"] {
+  display: none !important;
+}
