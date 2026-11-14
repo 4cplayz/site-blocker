@@ -37,6 +37,12 @@ chrome.windows.onFocusChanged.addListener(() => track());
 chrome.idle.onStateChanged.addListener(() => track());
 
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
+  // The timer on a page (overlay/timer.js) may ask one thing: count now.
+  // The count is sent to every timer; nothing is answered here.
+  if (message?.type === "timerHello" && sender.id === chrome.runtime.id && sender.tab) {
+    track();
+    return false;
+  }
   // Only the extension's own pages may ask: never a web page's script.
   const own =
     sender.id === chrome.runtime.id && sender.url?.startsWith(chrome.runtime.getURL(""));

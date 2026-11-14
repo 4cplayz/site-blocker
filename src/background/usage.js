@@ -15,6 +15,7 @@ import {
   locate,
   placeKey,
   saveUsage,
+  timerOf,
 } from "./state.js";
 
 export const TICK_ALARM = "tick";
@@ -67,6 +68,31 @@ function overNow(state) {
   });
 }
 
+/**
+ * Tells every open page of a listed site what its timer shows
+ * (overlay/timer.js): the time left as of `now`, and whether it is running.
+ * A limit runs while the site is in use; a pass runs by the clock.
+ */
+async function announce(state, keys, now) {
+  const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] });
+  await Promise.all(
+    tabs.map(async (tab) => {
+      try {
+        const place = locate(state, new URL(tab.url).hostname);
+        if (!place) return;
+        const timer = timerOf(state, place, now);
+        if (timer) {
+          timer.running = timer.total === null || keys.includes(placeKey(place));
+          timer.at = now;
+        }
+        await chrome.tabs.sendMessage(tab.id, { type: "sb-timer", timer }, { frameId: 0 });
+      } catch {
+        // No timer on that page: it never had time to count.
+      }
+    }),
+  );
+}
+
 let queue = Promise.resolve();
 
 /** Counts the time since the last call. Calls run one after the other. */
@@ -96,6 +122,7 @@ async function trackNow() {
   if (keys.length > 0 || watch?.keys?.length) {
     await chrome.storage.session.set({ [WATCH_KEY]: { keys, since: now } });
   }
+  await announce(state, keys, now);
 
   // The tick runs only while a limit exists; creating it again would
   // restart its half minute, so an alarm already set is left alone.

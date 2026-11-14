@@ -28,6 +28,7 @@ zone, a timed pass) needs the password from `.env`. Tightening is free.
   `src/sites/index.js` is the registry. `src/sites/generic/` holds the two
   blockers offered on any custom site.
 - `src/ui/` — popup, options page, blocked page, the shared stylesheet.
+- `src/overlay/timer.js` — the timer drawn on a page of a limited site.
 - `scripts/` — `build.mjs`, `check-sites.mjs`.
 
 # Site module contract
@@ -180,6 +181,33 @@ per call. It is called on tab, window, navigation and idle events and by the
 `tick` alarm every 30 s while a limit exists. The count lives under its own
 storage key, `usage` (`{ day, ms: { <site id or domain>: ms } }`), which
 only the tracker writes; what is in use lives in `storage.session`.
+
+## The timer on the page (`src/overlay/timer.js`)
+
+A site with time counting down (a daily limit not yet used, or a pass
+holding a closed site open: `timerOf` in `state.js`) draws a small chip with
+the time left. `apply.js` registers the script for those sites (id `sbt:…`,
+top frame, `document_idle`) and runs it in the tabs already open.
+
+The chip decides nothing and reads no storage. After every count `track()`
+sends each open page of a listed site `{ type: "sb-timer", timer }`, with
+`timer` null (hide) or `{ left, total, running, at }`; between two messages
+the chip counts down from those numbers. Its one message to the background
+is `timerHello` ("count now"): on load, and when it reaches zero.
+
+It keeps out of the way: it takes no click (`pointer-events: none`), fades
+when the pointer is near, and sits in the spot that covers the least. Each
+of 16 spots along the window's edges is probed at nine points with
+`elementFromPoint`: a control costs most, a picture or words less, and
+anything that scrolls away far less than what is pinned (`fixed`, `sticky`).
+Corners win ties, bottom left first; it moves only for a clearly better
+spot, and looks again after a scroll, a resize, a change of the page.
+
+It lives in a closed shadow root on an `sb-timer` element in the top layer
+(`popover`), built without `innerHTML` or a `style` element so a strict page
+(CSP, Trusted Types) lets it through. Its colours are `ui.css`'s tokens,
+copied: a web page cannot link the stylesheet. Its font is the system's:
+a strict page refuses one loaded from the extension.
 
 `whereAmI` tells the popup what the active tab is: `here` is
 `{ kind: "site", siteId }`, `{ kind: "custom", domain }`,

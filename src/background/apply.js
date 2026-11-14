@@ -4,10 +4,14 @@
 // open. Everything is rebuilt from the state each time: no rule is patched.
 import { SITES } from "../sites/index.js";
 import { escapeDomain, pathRegexForUrl } from "./domains.js";
-import { cssFor, isClosed, locate, pathRedirect } from "./state.js";
+import { cssFor, isClosed, locate, pathRedirect, timerOf } from "./state.js";
 
 export const PASS_ALARM = "passes";
 const SCRIPT_PREFIX = "sb-";
+// The timer has its own registration, under a prefix no domain can follow.
+const TIMER_PREFIX = "sbt:";
+const TIMER_FILE = "overlay/timer.js";
+const ours = (script) => script.id.startsWith(SCRIPT_PREFIX) || script.id.startsWith(TIMER_PREFIX);
 /** A page being closed beats a part of it being closed. */
 const PRIORITY = { network: 1, path: 2, zone: 3 };
 
@@ -94,14 +98,20 @@ function buildRules(state, now) {
   return rules;
 }
 
-function buildScripts(state) {
+function buildScripts(state, now) {
   const scripts = [];
   for (const place of places(state)) {
+    const key = place.kind === "site" ? place.site.id : place.domains[0];
+    const matches = place.domains.flatMap((domain) => [`*://${domain}/*`, `*://*.${domain}/*`]);
+    // A place with time counting down draws its timer, in the top frame.
+    if (timerOf(state, place, now)) {
+      scripts.push({ id: TIMER_PREFIX + key, matches, js: [TIMER_FILE], runAt: "document_idle" });
+    }
     const css = cssFor(place);
     if (css.length === 0) continue;
     const script = {
-      id: SCRIPT_PREFIX + (place.kind === "site" ? place.site.id : place.domains[0]),
-      matches: place.domains.flatMap((domain) => [`*://${domain}/*`, `*://*.${domain}/*`]),
+      id: SCRIPT_PREFIX + key,
+      matches,
       css,
       runAt: "document_start",
       allFrames: true,
@@ -136,6 +146,13 @@ async function syncTabs(state, before, after, now) {
         if (redirect) {
           await chrome.tabs.update(tab.id, { url: url.origin + redirect });
           return;
+        }
+        // The timer, on a page loaded before there was time to count. The
+        // script does nothing a second time.
+        if (timerOf(state, place, now)) {
+          await chrome.scripting
+            .executeScript({ target: { tabId: tab.id }, files: [TIMER_FILE] })
+            .catch(() => {});
         }
         const id = SCRIPT_PREFIX + (place.kind === "site" ? place.site.id : place.domains[0]);
         const was = before.get(id)?.css ?? [];
@@ -184,10 +201,8 @@ async function applyNow(state) {
     addRules: rules,
   });
 
-  const registered = (await chrome.scripting.getRegisteredContentScripts()).filter((script) =>
-    script.id.startsWith(SCRIPT_PREFIX),
-  );
-  const scripts = buildScripts(state);
+  const registered = (await chrome.scripting.getRegisteredContentScripts()).filter(ours);
+  const scripts = buildScripts(state, now);
   if (registered.length > 0) {
     await chrome.scripting.unregisterContentScripts({ ids: registered.map((s) => s.id) });
   }

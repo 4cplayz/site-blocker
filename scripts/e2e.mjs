@@ -19,8 +19,17 @@ const PORT = 9339;
 const WEB = 8123;
 const SITE = `http://example.com:${WEB}`;
 const server = createServer((request, response) => {
-  response.writeHead(200, { "content-type": "text/html" });
-  response.end("<!doctype html><title>test</title><p>A page.</p><img alt=''><video></video>");
+  // /strict is a page as locked down as the big sites are.
+  const strict = request.url.startsWith("/strict")
+    ? { "content-security-policy": "default-src 'self'; require-trusted-types-for 'script'" }
+    : {};
+  response.writeHead(200, { "content-type": "text/html", ...strict });
+  // /busy has a control pinned in three corners: the timer must keep off them.
+  const pin = (where) => `<button style="position:fixed;${where};width:160px;height:60px">menu</button>`;
+  const busy = request.url.startsWith("/busy")
+    ? pin("left:0;bottom:0") + pin("right:0;bottom:0") + pin("right:0;top:0")
+    : "";
+  response.end(`<!doctype html><title>test</title><p>A page.</p><img alt=''><video></video>${busy}`);
 }).listen(WEB, "127.0.0.1");
 
 function findChrome() {
@@ -295,7 +304,37 @@ try {
   const timed = await browser.open(`${ORG}/`);
   url = await timed.settle((u) => u.startsWith(ORG));
   check("under its limit the site opens", url === `${ORG}/`, url);
+  const chip = (page) =>
+    page.eval(`(() => {
+      const timer = document.querySelector("sb-timer");
+      if (!timer) return null;
+      const box = timer.getBoundingClientRect();
+      return { text: timer.getAttribute("aria-label"), left: box.left < 60, top: box.top < 60,
+        bottom: box.bottom > innerHeight - 60, shown: box.width > 0,
+        covers: [...document.querySelectorAll("button")].filter((button) => {
+          const b = button.getBoundingClientRect();
+          return box.left < b.right && b.left < box.right && box.top < b.bottom && b.top < box.bottom;
+        }).length };
+    })()`);
   await sleep(1500);
+  let drawn = await chip(timed);
+  check("and draws its timer, the time left today", drawn?.shown && /^(29:\d\d|30:00)$/.test(drawn.text), JSON.stringify(drawn));
+  check("in the bottom left corner of an empty page", drawn?.left && drawn?.bottom, JSON.stringify(drawn));
+  await timed.goto(`${ORG}/busy`);
+  await sleep(1500);
+  drawn = await chip(timed);
+  check(
+    "and clear of the controls pinned in the corners of a busy one",
+    drawn?.shown && drawn.covers === 0 && !(drawn.left && drawn.bottom),
+    JSON.stringify(drawn),
+  );
+  await timed.shot("timer");
+  await timed.goto(`${ORG}/strict`);
+  await sleep(1500);
+  drawn = await chip(timed);
+  check("a strict page (CSP, Trusted Types) gets its timer too", drawn?.shown === true, JSON.stringify(drawn));
+  check("without an error", browser.errors.length === 0, browser.errors.join(" | "));
+  await timed.goto(`${ORG}/`);
   await options.ask("lock");
   answer = await options.ask("setLimit", { domain: "example.org", minutes: 15 });
   check("a shorter limit is free while locked", answer.ok && (await org()).limit === 15);

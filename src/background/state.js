@@ -123,6 +123,22 @@ export function isClosed(state, place, now = Date.now()) {
   );
 }
 
+/**
+ * What the timer drawn on a place's pages counts down (overlay/timer.js):
+ * the rest of today's limit, or of the pass that keeps a closed place open.
+ * `total` is the whole the rest is a part of; a pass has none. Null when
+ * nothing is counting.
+ */
+export function timerOf(state, place, now = Date.now()) {
+  const limit = place.entry.limit * 60_000;
+  const left = limit - (state.usage.ms[placeKey(place)] ?? 0);
+  if (place.entry.blockAll || isOverLimit(state, place)) {
+    const until = Math.max(...place.domains.map((domain) => state.passes[domain] ?? 0));
+    return until > now ? { left: until - now, total: null } : null;
+  }
+  return limit > 0 ? { left, total: limit } : null;
+}
+
 /** The CSS files a place has on, as paths from the extension's root. */
 export function cssFor(place) {
   if (place.kind === "site") {
