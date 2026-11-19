@@ -4,7 +4,8 @@ import { SITES } from "../sites/index.js";
 import { apply } from "./apply.js";
 import { hostIn, toDomain } from "./domains.js";
 import { checkPassword, closeLock, openLock, unlockedUntil } from "./lock.js";
-import { track } from "./usage.js";
+import { statsFor } from "./stats.js";
+import { recount, track } from "./usage.js";
 import {
   CUSTOM_KEYS,
   MAX_LIMIT,
@@ -148,7 +149,11 @@ function whereIs(state, rawUrl) {
   return domain ? { kind: "other", domain } : { kind: "none" };
 }
 
+/** The requests that only read: they are answered with the time as of now. */
+const READS = ["getView", "whereAmI", "getStats"];
+
 export async function handle(message) {
+  if (READS.includes(message?.type)) await recount();
   const state = await loadState();
   prunePasses(state);
   const before = JSON.stringify(state);
@@ -157,6 +162,8 @@ export async function handle(message) {
   let extra = {};
   if (message?.type === "whereAmI") {
     extra = { here: whereIs(state, message.url) };
+  } else if (message?.type === "getStats") {
+    extra = { stats: await statsFor(state, message.days) };
   } else if (Object.hasOwn(HANDLERS, message?.type)) {
     const open = (await unlockedUntil()) !== null;
     refusal = await HANDLERS[message.type](state, message, open);

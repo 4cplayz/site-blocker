@@ -375,6 +375,76 @@ try {
   url = await timed.settle((u) => u.startsWith(ORG));
   check("a new day starts from nothing", url === `${ORG}/` && (await org()).usedMs < 60_000, url);
   await timed.close();
+
+  // --- time spent -------------------------------------------------------
+  let { history } = await options.eval(`chrome.storage.local.get("history")`);
+  check(
+    "the day that ended is filed in the history",
+    history?.["2000-01-01"]?.["example.org"] === 15 * 60_000,
+    JSON.stringify(history),
+  );
+  const yesterday = await options.eval(
+    `(() => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - 1); const two = (n) => String(n).padStart(2, "0"); return d.getFullYear() + "-" + two(d.getMonth() + 1) + "-" + two(d.getDate()); })()`,
+  );
+  await options.eval(
+    `chrome.storage.local.set({ history: { ${JSON.stringify(yesterday)}: { youtube: 3600000, "example.org": 1800000 } } })`,
+  );
+  // A site that is not listed, in front for a moment; the next navigation
+  // is what counts it.
+  const local = await browser.open(`http://localhost:${WEB}/`);
+  await sleep(600);
+  const plain = await browser.open(`${SITE}/`);
+  await local.close();
+  await sleep(600);
+  await plain.goto(`${SITE}/more`);
+  await sleep(400);
+  answer = await options.ask("getStats", { days: 7 });
+  await plain.close();
+  const stats = answer.stats;
+  check(
+    "the daily average is over the full days counted, today left out",
+    answer.ok && stats.averageDays === 1 && stats.averageMs === 5_400_000 && stats.days.length === 7,
+    JSON.stringify(stats),
+  );
+  check(
+    "split by site, the most used first, a built-in site by its name",
+    stats.sites[0]?.name === "YouTube" &&
+      stats.sites[0].averageMs === 3_600_000 &&
+      stats.sites[1]?.key === "example.org",
+    JSON.stringify(stats.sites),
+  );
+  check(
+    "a site with no limit is counted too",
+    stats.sites.some((site) => site.key === "example.com" && site.todayMs > 0) &&
+      answer.view.todayMs === stats.todayMs,
+    JSON.stringify(stats.sites),
+  );
+  check(
+    "localhost is counted like any site",
+    stats.sites.some((site) => site.key === "localhost" && site.todayMs > 0),
+    JSON.stringify(stats.sites),
+  );
+  // A site in front, and no event since: asking is what counts it.
+  const front = await browser.open(`${SITE}/front`);
+  await sleep(6000);
+  const before = (await options.eval(`chrome.storage.local.get("usage")`)).usage.ms["example.com"] ?? 0;
+  answer = await options.ask("getStats", { days: 7 });
+  const after = answer.stats.sites.find((site) => site.key === "example.com")?.todayMs ?? 0;
+  check("asking counts the time up to now", after - before > 4000, `${before} -> ${after}`);
+  await front.close();
+  answer = await options.ask("getStats", { days: 30 });
+  check("thirty days on request", answer.stats.days.length === 30 && answer.stats.days.at(-1).day === today);
+  const statsPage = await browser.open(ext("ui/stats.html"), { width: 1100, height: 1000 });
+  await sleep(700);
+  const figure = await statsPage.eval(`document.querySelector(".stat .text-title")?.textContent`);
+  check("the time spent page draws the average", figure === "1 h 30 min", String(figure));
+  const bars = await statsPage.eval(
+    `[...document.querySelectorAll(".chart-bar")].map((bar) => Math.round(bar.getBoundingClientRect().height))`,
+  );
+  check("and a bar per day, the tallest the fullest day", bars.length === 7 && bars[5] > 80 && bars[0] <= 2, bars.join());
+  await statsPage.shot("stats");
+  await statsPage.close();
+
   await options.ask("unlock", { password });
   answer = await options.ask("removeCustom", { domain: "example.org" });
   check("unlocked, the limited site can be removed", answer.ok === true);

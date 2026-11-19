@@ -27,7 +27,8 @@ zone, a timed pass) needs the password from `.env`. Tightening is free.
 - `src/sites/<id>/` — one folder per supported site (contract below).
   `src/sites/index.js` is the registry. `src/sites/generic/` holds the two
   blockers offered on any custom site.
-- `src/ui/` — popup, options page, blocked page, the shared stylesheet.
+- `src/ui/` — popup, options page, "Time spent" page (`stats.html`), blocked
+  page, the shared stylesheet.
 - `src/overlay/timer.js` — the timer drawn on a page of a limited site.
 - `scripts/` — `build.mjs`, `check-sites.mjs`.
 
@@ -140,6 +141,7 @@ one of `"locked"` (a loosening change while locked), `"wrong-password"`
 {
   locked: true,              // false while a password unlock is running
   unlockedUntil: null,       // ms timestamp while unlocked
+  todayMs: 5400000,          // the time counted today, every site together
   sites: [{                  // the built-in sites, in registry order
     id: "youtube", name: "YouTube", domains: ["youtube.com"],
     blockAll: false,         // true = the site is in the black zone
@@ -166,21 +168,53 @@ one of `"locked"` (a loosening change while locked), `"wrong-password"`
 | `grantPass`    | `domain`, `minutes` (5, 15 or 60), `password` | checks the password itself, locked or not |
 | `revokePass`   | `domain`                          | no         |
 | `whereAmI`     | `url`                             | answers `{ ok, view, here }` |
+| `getStats`     | `days` (7 or 30)                  | answers `{ ok, view, stats }` |
 
 Every entry of `sites` and `custom` also carries `limit` (its daily limit in
 minutes, 0 = none) and `usedMs` (the time counted today).
 
-## Daily limits (`src/background/usage.js`)
+## Time spent and daily limits (`src/background/usage.js`)
+
+`track()` counts the time on every web site: each call adds the time since
+the last call to the sites that were in use then (the front tab of the
+focused window, and any tab playing sound; nothing while the computer is
+locked), at most 90 s per call. A listed site counts under its id or
+domain, any other under its hostname without `www.` (`localhost` and IP
+addresses included). It is called on tab, window, navigation and idle
+events, by the `tick` alarm every 30 s while a site is in use or a limit
+exists, and before a read (`getView`, `whereAmI`, `getStats`) is answered
+unless the count is under 5 s old (`recount`), so a page that opens draws
+the time as of now. Today's count lives under its own
+storage key, `usage` (`{ day, ms: { <site id or domain>: ms } }`), which
+only the tracker writes; what is in use lives in `storage.session`.
+
+At the first count of a new day, the day that ended is filed under the
+`history` key (`{ "2026-11-13": { <key>: ms } }`, the last 400 days) and
+today starts from nothing.
 
 A site with a limit is closed like a black-zone site once today's time is
 used (`isClosed` in `state.js`), until local midnight; a pass opens it.
-`track()` does the counting: each call adds the time since the last call to
-the sites that were in use then (the front tab of the focused window, and
-any tab playing sound; nothing while the computer is locked), at most 90 s
-per call. It is called on tab, window, navigation and idle events and by the
-`tick` alarm every 30 s while a limit exists. The count lives under its own
-storage key, `usage` (`{ day, ms: { <site id or domain>: ms } }`), which
-only the tracker writes; what is in use lives in `storage.session`.
+Time counted before a limit was set that day counts against it.
+
+## Time spent page (`src/background/stats.js`, `src/ui/stats.js`)
+
+`getStats` answers `stats` for the last 7 or 30 days:
+
+```js
+{
+  range: 7,
+  days: [{ day: "2026-11-08", ms: 0 }, …], // oldest first, today last
+  todayMs: 1200000,
+  averageMs: 5400000,   // per day, over the full days of the range
+  averageDays: 6,       // how many; 0 = none yet, the figures are today's
+  sites: [{ key: "youtube", name: "YouTube", averageMs: 3600000, todayMs: 0 }],
+}
+```
+
+Today is not over, so it stays out of the average, as does any day before
+the first one in the history. The page draws the answer and nothing else;
+a bar's height and a meter's width are a `--share` custom property (0 to 1)
+that `ui.css` turns into a size.
 
 ## The timer on the page (`src/overlay/timer.js`)
 

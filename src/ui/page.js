@@ -39,6 +39,8 @@ export function createPage({ root, load, build }) {
     view: null,
     /** whereAmI's `here`, for the popup. */
     here: null,
+    /** getStats's `stats`, for the "Time spent" page. */
+    stats: null,
     /** A change refused while locked, waiting for the password:
      * { key, reason, run, focus, done }. One at a time. */
     prompt: null,
@@ -62,6 +64,7 @@ export function createPage({ root, load, build }) {
     page.failed = failed;
     if (answer.view) page.view = answer.view;
     if ("here" in answer) page.here = answer.here;
+    if ("stats" in answer) page.stats = answer.stats;
   }
 
   /** Where focus goes on the next draw (else it stays where it was). */
@@ -186,6 +189,11 @@ export function createPage({ root, load, build }) {
 
   page.start = async () => {
     onStateChange(page.refresh);
+    // Coming back to a page left open in a tab: ask again, so the times
+    // it shows are as of now.
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") page.refresh();
+    });
     await page.refresh();
   };
 

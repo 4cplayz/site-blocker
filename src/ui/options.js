@@ -3,7 +3,7 @@
 // supported site.
 
 import { send } from "./api.js";
-import { button, h, iconButton, text, uid } from "./components.js";
+import { button, h, icon, iconButton, text, uid } from "./components.js";
 import {
   createPage,
   customSwitches,
@@ -27,6 +27,12 @@ function build(page) {
     { class: "section-head" },
     text("display", "Site Blocker"),
     text("small", "Close whole sites, or hide only the parts that pull you in.", { tone: "muted" }),
+    h(
+      "a",
+      { href: "stats.html", class: "footer-link text-small", key: "stats" },
+      icon("chart-column"),
+      "Time spent",
+    ),
   );
   if (!page.view) return [head, failureNotice(page)];
   return [head, failureNotice(page), lockPanel(page), blackZone(page), supportedSites(page)];

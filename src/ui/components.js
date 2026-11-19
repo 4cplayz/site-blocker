@@ -49,6 +49,12 @@ const ICONS = {
     ],
     ["circle", { cx: "12", cy: "12", r: "3" }],
   ],
+  "chart-column": [
+    ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16" }],
+    ["path", { d: "M18 17V9" }],
+    ["path", { d: "M13 17V5" }],
+    ["path", { d: "M8 17v-3" }],
+  ],
   trash: [
     ["path", { d: "M10 11v6" }],
     ["path", { d: "M14 11v6" }],
@@ -435,6 +441,19 @@ export function minutesWords(minutes) {
   const rest = minutes % 60;
   if (hours === 0) return plural(rest, "minute");
   return rest ? `${plural(hours, "hour")} and ${plural(rest, "minute")}` : plural(hours, "hour");
+}
+
+/**
+ * A time spent, as a figure: "2 h 14 min", "45 min", "0 min". Anything
+ * under a minute that is not nothing is "under 1 min".
+ */
+export function hoursMinutes(ms) {
+  if (ms > 0 && ms < MINUTE) return "under 1 min";
+  const minutes = Math.max(0, Math.round(ms / MINUTE));
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (hours === 0) return `${rest} min`;
+  return rest ? `${hours} h ${rest} min` : `${hours} h`;
 }
 
 /** A wait, said once and not counted down: "30 seconds", "2 minutes". */

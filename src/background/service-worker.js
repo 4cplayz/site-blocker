@@ -26,7 +26,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === TICK_ALARM) await track();
 });
 
-// The daily limits count the site in front: every change of what is in
+// The time spent counts the site in front: every change of what is in
 // front is a moment to count up to.
 chrome.tabs.onActivated.addListener(() => track());
 chrome.tabs.onRemoved.addListener(() => track());

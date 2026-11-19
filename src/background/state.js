@@ -8,6 +8,9 @@ const KEY = "state";
 // tracker writes it every half minute, and must never write over a setting
 // changed meanwhile.
 export const USAGE_KEY = "usage";
+// The days that are over, one count each, for the "Time spent" page.
+const HISTORY_KEY = "history";
+const HISTORY_DAYS = 400;
 export const PASS_MINUTES = [5, 15, 60];
 export const CUSTOM_KEYS = ["blockAll", "images", "videos"];
 export const MAX_LIMIT = 24 * 60;
@@ -67,6 +70,30 @@ export async function saveState(state) {
 
 export async function saveUsage(usage) {
   await chrome.storage.local.set({ [USAGE_KEY]: usage });
+}
+
+/** The finished days: `{ "2026-11-13": { <site id or domain>: ms } }`. */
+export async function loadHistory() {
+  const { [HISTORY_KEY]: history } = await chrome.storage.local.get(HISTORY_KEY);
+  return history && typeof history === "object" ? history : {};
+}
+
+/**
+ * Files a finished day's count (the stored `usage` of a day that is over)
+ * in the history. Filing the same day twice changes nothing. The oldest
+ * days go once there are more than HISTORY_DAYS.
+ */
+export async function archiveDay(usage) {
+  if (!/^\d{4}-\d\d-\d\d$/.test(usage?.day ?? "")) return;
+  const ms = {};
+  for (const [key, value] of Object.entries(usage.ms ?? {})) {
+    if (typeof value === "number" && value > 0) ms[key] = Math.round(value);
+  }
+  if (Object.keys(ms).length === 0) return;
+  const history = await loadHistory();
+  history[usage.day] = ms;
+  for (const day of Object.keys(history).sort().slice(0, -HISTORY_DAYS)) delete history[day];
+  await chrome.storage.local.set({ [HISTORY_KEY]: history });
 }
 
 /** The name a place's time is counted under. */
@@ -171,6 +198,7 @@ export function toView(state, unlockedUntil) {
   return {
     locked: unlockedUntil === null,
     unlockedUntil,
+    todayMs: Math.round(Object.values(state.usage.ms).reduce((sum, ms) => sum + ms, 0)),
     sites: SITES.map((site) => ({
       id: site.id,
       name: site.name,

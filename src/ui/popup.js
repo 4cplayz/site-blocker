@@ -3,7 +3,7 @@
 // quiet line. Below, the lock, and the way to all settings.
 
 import { send } from "./api.js";
-import { blockedOriginal, button, h, icon, text, uid } from "./components.js";
+import { blockedOriginal, button, h, hoursMinutes, icon, text, uid } from "./components.js";
 import {
   createPage,
   customSwitches,
@@ -61,7 +61,32 @@ function sameSite(domain, hostname) {
 
 function build(page) {
   if (!page.view) return [failureNotice(page)];
-  return [failureNotice(page), herePanel(page), lockPanel(page), settingsLink()];
+  return [
+    failureNotice(page),
+    herePanel(page),
+    lockPanel(page),
+    h("nav", { class: "stack-tight" }, statsLink(page.view), settingsLink()),
+  ];
+}
+
+/** Today's time on every site, and the way to the "Time spent" page. */
+function statsLink(view) {
+  return h(
+    "a",
+    {
+      href: "stats.html",
+      class: "footer-link text-small",
+      key: "stats",
+      on: {
+        click: (event) => {
+          event.preventDefault();
+          chrome.tabs.create({ url: chrome.runtime.getURL("ui/stats.html") });
+        },
+      },
+    },
+    icon("chart-column"),
+    `Time spent: ${hoursMinutes(view.todayMs ?? 0)} today`,
+  );
 }
 
 function herePanel(page) {
