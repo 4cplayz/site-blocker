@@ -1,0 +1,11 @@
+/* Facebook, Marketplace. Its pages (/marketplace/...) are closed by the path rule. */
+
+/* Top bar and left column: the Marketplace entry ("/marketplace/?ref=app_tab", "?ref=bookmark"), its whole list item */
+li:has(a[href^="/marketplace"], a[href^="https://www.facebook.com/marketplace"]) {
+  display: none !important;
+}
+
+/* Feeds: a post or strip of Marketplace listings ("/marketplace/item/<id>") */
+[aria-posinset]:has(a[href*="/marketplace/item/"]) {
+  display: none !important;
+}

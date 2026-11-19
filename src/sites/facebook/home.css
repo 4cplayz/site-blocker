@@ -1,0 +1,13 @@
+/*
+ * Facebook, Home feed: the posts of the home page. The home feed is the one
+ * feed laid out as a heading ("News Feed posts" / "Publications du fil",
+ * visually hidden), an empty aria-hidden spacer and the list of posts;
+ * groups have a role="feed" list instead, Pages and profiles another
+ * layout. Hiding the whole block also hides the loader at its end, so the
+ * page stops fetching posts.
+ */
+
+/* Home: the block holding the heading, the spacer and every post */
+div:has(> h3 + div[aria-hidden="true"] + div [aria-posinset]) {
+  display: none !important;
+}

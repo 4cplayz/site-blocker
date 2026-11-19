@@ -1,0 +1,26 @@
+/*
+ * Facebook, Reels: the Reels product and every door into it. The Reels
+ * viewer itself (/reel/..., where /watch/ now leads too) is closed by the
+ * path rule. Every post of a feed is an [aria-posinset] element; class
+ * names are generated per build.
+ */
+
+/* Top bar and left column: the Reels entry ("/reel/?s=tab", aria-label "Reels" in English and French), its whole list item */
+li:has(a[href^="/reel/?"], a[href="/reel/"], a[href^="https://www.facebook.com/reel/?"], a[href="https://www.facebook.com/reel/"]) {
+  display: none !important;
+}
+
+/* Pages and profiles: the Reels tab ("/<page>/reels") */
+a[role="tab"]:is([href$="/reels"], [href$="/reels/"]) {
+  display: none !important;
+}
+
+/* Feeds: the "Reels" shelf of the home feed, and any post holding a reel ("/reel/<id>"); a reel linked in a comment does not count */
+[aria-posinset]:has(a[href*="/reel/"]:not([data-commentid] *)) {
+  display: none !important;
+}
+
+/* Feeds: the slot around such a post, marked by the classifier (it holds the gap to the next post) */
+[data-sb~="short"] {
+  display: none !important;
+}

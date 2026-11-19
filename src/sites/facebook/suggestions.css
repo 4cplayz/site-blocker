@@ -1,0 +1,20 @@
+/*
+ * Facebook, Suggestions: the "People you may know" and suggested-groups
+ * strips of the feed. The page of friend suggestions (/friends/suggestions)
+ * is closed by the path rule.
+ */
+
+/* Home feed: the "People you may know" strip (its "see all" link goes to /friends/suggestions/) */
+[aria-posinset]:has(a[href*="/friends/suggestions"]) {
+  display: none !important;
+}
+
+/* Home feed: the suggested-groups strip, by its "Join group" / "Se joindre au groupe" and "Remove suggested group" / "Supprimer le groupe suggéré" buttons */
+[aria-posinset]:has([aria-label="Join group"], [aria-label="Se joindre au groupe"], [aria-label^="Remove suggested group"], [aria-label^="Supprimer le groupe suggéré"]) {
+  display: none !important;
+}
+
+/* Home feed: the slot around either strip (the posts list follows the hidden heading and its spacer), so no gap stays */
+h3 + div[aria-hidden="true"] + div > div:has(a[href*="/friends/suggestions"], [aria-label="Join group"], [aria-label="Se joindre au groupe"], [aria-label^="Remove suggested group"], [aria-label^="Supprimer le groupe suggéré"]) {
+  display: none !important;
+}

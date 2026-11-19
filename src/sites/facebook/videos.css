@@ -1,0 +1,29 @@
+/*
+ * Facebook, Videos: posts whose main content is a video, reels included
+ * (the Reels shelf and the Reels entry are the Reels switch). Every post of
+ * a feed (home, groups, Pages, profiles) is an [aria-posinset] element; no
+ * other stable name exists, class names are generated per build.
+ * A photo post with music also carries a <video> (0 by 0, for its sound),
+ * but never a poster frame: `video[poster]` is the video sign. A video in
+ * a comment ([data-commentid]) does not make the post a video post.
+ */
+
+/* Feeds: a post with a video player, a link to a video or reel page, or a YouTube or Vimeo video (Facebook's link shim encodes the URL, hence "%2F") */
+[aria-posinset]:has(:is(video[poster], a[href*="/watch/"], a[href*="/videos/"], a[href*="/reel/"], a[href*="youtube.com/watch"], a[href*="youtube.com%2Fwatch"], a[href*="youtu.be"], iframe[src*="youtube.com/embed"], iframe[src*="player.vimeo.com"]):not([data-commentid] *)) {
+  display: none !important;
+}
+
+/* Feeds: the slot around such a post, marked by the classifier (it holds the gap to the next post) */
+[data-sb~="video"] {
+  display: none !important;
+}
+
+/* Pages and profiles: the Videos and Live tabs ("/<page>/videos", "/<page>/live_videos") */
+a[role="tab"]:is([href$="/videos"], [href$="/videos/"], [href$="/live_videos"], [href$="/live_videos/"]) {
+  display: none !important;
+}
+
+/* Left column and top bar: a Video entry ("/watch/"), for accounts that still have one */
+li:has(a[href="/watch/"], a[href^="/watch/?"], a[href^="https://www.facebook.com/watch/"]) {
+  display: none !important;
+}

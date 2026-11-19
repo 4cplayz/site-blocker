@@ -1,0 +1,22 @@
+/*
+ * Facebook, Photos: posts whose main content is a photo or several photos
+ * (a photo post with music included). A photo in a post links its photo
+ * page ("/photo/?fbid=", "/photo.php", "/<page>/photos/..."); a video post,
+ * a reel, a text post and a link preview never do. A photo in a comment
+ * ([data-commentid]) does not make the post a photo post.
+ */
+
+/* Feeds (home, groups, Pages, profiles): a post linking a photo page */
+[aria-posinset]:has(:is(a[href*="/photo/"], a[href*="/photo?"], a[href*="/photo.php"], a[href*="/photos/"]):not([data-commentid] *)) {
+  display: none !important;
+}
+
+/* Feeds: the slot around such a post, marked by the classifier (it holds the gap to the next post) */
+[data-sb~="image"] {
+  display: none !important;
+}
+
+/* Pages and profiles: the Photos tab ("/<page>/photos") */
+a[role="tab"]:is([href$="/photos"], [href$="/photos/"]) {
+  display: none !important;
+}

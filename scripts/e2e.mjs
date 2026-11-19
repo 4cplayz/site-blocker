@@ -226,8 +226,8 @@ try {
   let answer = await options.ask("getView");
   check("the options page talks to the worker", answer?.ok === true && answer.view.locked === true);
   check(
-    "five sites, each with the three standard blockers or a reason not to",
-    answer.view.sites.length === 5 && answer.view.sites.every((s) => s.features.length > 0),
+    "six sites, each with the three standard blockers or a reason not to",
+    answer.view.sites.length === 6 && answer.view.sites.every((s) => s.features.length > 0),
     JSON.stringify(answer.view.sites.map((s) => [s.id, s.features.map((f) => f.id)])),
   );
   await options.shot("options-start");
@@ -389,7 +389,7 @@ try {
   }
   const rules = await options.eval("chrome.declarativeNetRequest.getDynamicRules()");
   const scripts = await options.eval("chrome.scripting.getRegisteredContentScripts()");
-  check("one registered stylesheet set per site", scripts.length === 5, `${scripts.length}`);
+  check("one registered stylesheet set per site", scripts.length === 6, `${scripts.length}`);
   console.log(`      ${rules.length} network rules, ${scripts.flatMap((s) => s.css).length} stylesheets`);
 
   const outcome = async (target) =>
@@ -408,6 +408,14 @@ try {
   check("a TikTok profile stays open", !(await outcome("https://www.tiktok.com/@tiktok")));
   check("a single X post stays open", !(await outcome("https://x.com/NASA/status/123")));
   check("instagram.com/ stays open", !(await outcome("https://www.instagram.com/")));
+  check("facebook.com/reel/… is closed", await outcome("https://www.facebook.com/reel/1402918528581597"));
+  check("facebook.com/watch/?v=… is closed", await outcome("https://www.facebook.com/watch/?v=123"));
+  check("a Facebook Page's Videos tab is closed", await outcome("https://www.facebook.com/NASA/videos/"));
+  check("a Facebook Page stays open", !(await outcome("https://www.facebook.com/NASA")));
+  check("developers.facebook.com keeps its paths", !(await outcome("https://developers.facebook.com/videos/")));
+  check("a Facebook story is closed", await outcome("https://www.facebook.com/stories/123/abc/"));
+  check("Facebook Marketplace is closed", await outcome("https://www.facebook.com/marketplace/?ref=app_tab"));
+  check("Facebook friend suggestions are closed", await outcome("https://www.facebook.com/friends/suggestions/"));
   for (const home of [
     "https://www.youtube.com/",
     "https://www.instagram.com/direct/inbox/",
@@ -415,6 +423,11 @@ try {
     "https://www.tiktok.com/search?q=cats",
     "https://www.linkedin.com/feed/",
     "https://www.linkedin.com/messaging/",
+    "https://www.facebook.com/",
+    "https://www.facebook.com/groups/feed/",
+    "https://www.facebook.com/messages/t/123",
+    "https://www.facebook.com/friends/requests/",
+    "https://www.facebook.com/photo/?fbid=123",
   ]) {
     check(`no path rule swallows ${home}`, !(await outcome(home)));
   }

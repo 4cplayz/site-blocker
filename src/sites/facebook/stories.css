@@ -1,0 +1,13 @@
+/* Facebook, Stories. The viewer itself (/stories/...) is closed by the path rule. */
+
+/* Home: the stories tray above the feed (role="region", aria-label "Stories" in both languages) */
+[data-focus-target="stories_tray"] {
+  display: none !important;
+}
+
+/* The wrappers around the tray that hold nothing else (its virtualized slot), so no band stays above the feed */
+div:has(> [data-focus-target="stories_tray"]:only-child),
+div:has(> :only-child > [data-focus-target="stories_tray"]:only-child),
+div:has(> :only-child > :only-child > [data-focus-target="stories_tray"]:only-child) {
+  display: none !important;
+}

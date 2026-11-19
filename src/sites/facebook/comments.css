@@ -1,0 +1,11 @@
+/* Facebook, Comments: every comment, in feeds, opened posts and videos. */
+
+/* A comment with its replies: each one sits in a data-commentid block */
+[data-commentid] {
+  display: none !important;
+}
+
+/* A comment or a reply by its label, should the block ever lose the attribute ("Comment by …", "Commentaire de …", "Reply by …", "Réponse de …") */
+[role="article"]:is([aria-label^="Comment by "], [aria-label^="Commentaire de "], [aria-label^="Reply by "], [aria-label^="Réponse de "]) {
+  display: none !important;
+}
